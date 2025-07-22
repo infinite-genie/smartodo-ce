@@ -19,13 +19,10 @@
     "docs:build": "npm run build --workspace=docs",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
-    "supabase:reset": "supabase db reset",
-    "prepare": "husky"
+    "supabase:reset": "supabase db reset"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
-    "husky": "^9.0.0",
+    "@lerna/cli": "^8.0.0",
     "lerna": "^8.0.0",
     "rimraf": "^5.0.0",
     "typescript": "^5.3.0"
