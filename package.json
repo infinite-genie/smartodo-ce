@@ -1,0 +1,52 @@
+{
+  "name": "smartodo-ce",
+  "version": "0.1.0",
+  "description": "An AI-assisted smart todo application",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "docs"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "dev": "lerna run dev --parallel",
+    "clean": "lerna clean && rimraf node_modules",
+    "lint": "lerna run lint",
+    "test": "lerna run test",
+    "type-check": "lerna run type-check",
+    "docs:dev": "npm run start --workspace=docs",
+    "docs:build": "npm run build --workspace=docs",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:reset": "supabase db reset"
+  },
+  "devDependencies": {
+    "@lerna/cli": "^8.0.0",
+    "lerna": "^8.0.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infinite-genie/smartodo-ce.git"
+  },
+  "keywords": [
+    "todo",
+    "ai",
+    "productivity",
+    "react",
+    "react-native",
+    "supabase"
+  ],
+  "author": "Rony Varghese",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/infinite-genie/smartodo-ce/issues"
+  },
+  "homepage": "https://smartodo.com"
+}

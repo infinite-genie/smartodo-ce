@@ -1,0 +1,48 @@
+# Example Supabase configuration file
+# Copy this to config.toml and modify for your setup
+
+project_id = "smartodo"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
+
+[edge_runtime]
+enabled = true
+policy = "oneshot"
+inspector_port = 8083
