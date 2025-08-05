@@ -4,7 +4,9 @@
   "description": "SmartTodo Community Edition - A monorepo for todo management application",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/mobile/*",
+    "apps/web"
   ],
   "scripts": {
     "test": "lerna run test",
