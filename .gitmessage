@@ -1,0 +1,40 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+
+# --- COMMIT END ---
+# Type can be:
+#   feat     (new feature)
+#   fix      (bug fix)
+#   docs     (changes to documentation)
+#   style    (formatting, missing semi colons, etc; no code change)
+#   refactor (refactoring production code)
+#   test     (adding tests, refactoring test; no production code change)
+#   chore    (updating build tasks, package manager configs, etc; no production code change)
+#   perf     (performance improvements)
+#   ci       (CI/CD changes)
+#   build    (build system changes)
+#   revert   (reverting a previous commit)
+#
+# Scope can be:
+#   mobile   (React Native app)
+#   web      (Web application)
+#   shared   (Shared packages/utilities)
+#   config   (Lerna, workspace, build configuration)
+#   deps     (Dependency updates)
+#   ci       (CI/CD pipeline)
+#   docs     (Documentation)
+#   root     (Root-level changes)
+#   api      (API/backend changes)
+#   ui       (UI components)
+#   auth     (Authentication)
+#   db       (Database changes)
+#
+# Remember:
+# - Use imperative mood in the subject line
+# - Do not end the subject line with a period
+# - Capitalize the subject line
+# - Use the body to explain what and why vs. how
+# - Can use multiple scopes: feat(mobile,web): add dark mode
