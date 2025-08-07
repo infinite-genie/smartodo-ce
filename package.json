@@ -5,14 +5,17 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "apps/mobile/*",
-    "apps/web",
+    "apps/mobile/smarTODO",
+    "apps/web/smartodo",
     "apps/supabase"
   ],
   "scripts": {
     "test": "lerna run test",
     "build": "lerna run build",
-    "dev": "lerna run dev --parallel",
+    "dev": "lerna run dev --parallel --stream",
+    "dev:web": "lerna run dev --scope=smartodo-ce-web",
+    "dev:mobile": "lerna run dev --scope=smartodo-ce-rn",
+    "dev:supabase": "lerna run dev --scope=smartodo-supabase",
     "prepare": "husky",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "release": "lerna version --conventional-commits --yes"
@@ -32,7 +35,8 @@
     "husky": "^9.1.7",
     "lerna": "^8.2.3",
     "lint-staged": "^16.1.4",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "supabase": "^2.33.9"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

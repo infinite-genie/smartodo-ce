@@ -1,5 +1,10 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "independent",
-  "packages": ["packages/*", "apps/mobile/*", "apps/web", "apps/supabase"]
+  "packages": [
+    "packages/*",
+    "apps/mobile/smarTODO",
+    "apps/web/smartodo",
+    "apps/supabase"
+  ]
 }

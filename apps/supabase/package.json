@@ -1,0 +1,22 @@
+{
+  "name": "smartodo-supabase",
+  "version": "1.0.0",
+  "description": "Supabase configuration and database for SmartTodo CE",
+  "private": true,
+  "scripts": {
+    "dev": "supabase start",
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "status": "supabase status",
+    "reset": "supabase db reset",
+    "generate-types": "supabase gen types typescript --local > types/database.types.ts"
+  },
+  "keywords": [
+    "supabase",
+    "database",
+    "backend"
+  ],
+  "devDependencies": {
+    "supabase": "^2.23.9"
+  }
+}
