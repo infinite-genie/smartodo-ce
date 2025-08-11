@@ -9,7 +9,9 @@
     "stop": "supabase stop",
     "status": "supabase status",
     "reset": "supabase db reset",
-    "generate-types": "supabase gen types typescript --local > types/database.types.ts"
+    "generate-types": "supabase gen types typescript --local > types/database.types.ts",
+    "migrations:new": "supabase migration new",
+    "migrations:run": "supabase migration up"
   },
   "keywords": [
     "supabase",
