@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withRepeat,
   withTiming,
+  cancelAnimation,
 } from "react-native-reanimated";
 import { appColors } from "@/theme";
 
@@ -19,7 +20,13 @@ export default function HomeScreen() {
     scale.value = withRepeat(withTiming(1.1, { duration: 2000 }), -1, true);
 
     opacity.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
-  }, [scale, opacity]);
+
+    return () => {
+      cancelAnimation(scale);
+      cancelAnimation(opacity);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

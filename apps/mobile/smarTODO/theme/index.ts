@@ -71,8 +71,17 @@ export const theme = createTheme({
     grey5: colors.grey5,
     greyOutline: colors.greyOutline,
     searchBg: colors.searchBg,
+    background: colors.background,
+    divider: colors.divider,
   },
 });
+
+// Function to get theme based on color scheme
+export const getTheme = (colorScheme: "light" | "dark" | null) => {
+  // For now, return the light theme regardless of color scheme
+  // Can be extended later to support dark theme
+  return theme;
+};
 
 // Export individual color palette for custom usage
 export const appColors = colors;

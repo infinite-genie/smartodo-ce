@@ -11,7 +11,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { theme } from "@/theme";
+import { getTheme } from "@/theme";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -24,8 +24,10 @@ export default function RootLayout() {
     return null;
   }
 
+  const rneTheme = getTheme(colorScheme ?? "light");
+
   return (
-    <ElementsThemeProvider theme={theme}>
+    <ElementsThemeProvider theme={rneTheme}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
