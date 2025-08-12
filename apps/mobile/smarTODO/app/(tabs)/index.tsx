@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Text } from "react-native-elements";
+import { View, StyleSheet, Text as RNText } from "react-native";
+import { Text } from "@rneui/themed";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { appColors } from "@/theme";
 
-const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedText = Animated.createAnimatedComponent(RNText);
 
 export default function HomeScreen() {
   const scale = useSharedValue(1);
@@ -19,7 +19,7 @@ export default function HomeScreen() {
     scale.value = withRepeat(withTiming(1.1, { duration: 2000 }), -1, true);
 
     opacity.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
-  }, []);
+  }, [scale, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -30,7 +30,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <AnimatedText h1 style={[styles.hello, animatedStyle]}>
+      <AnimatedText style={[styles.hello, animatedStyle]}>
         Hello, smarTODO! 👋
       </AnimatedText>
       <Text style={styles.subtitle}>Your smart todo app is ready</Text>
@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   hello: {
+    fontSize: 32,
+    fontWeight: "700",
     color: appColors.primary,
     textAlign: "center",
     marginBottom: 16,

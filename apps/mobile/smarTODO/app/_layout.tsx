@@ -1,13 +1,14 @@
+import "react-native-reanimated";
+
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { ThemeProvider as ElementsThemeProvider } from "react-native-elements";
+import { ThemeProvider as ElementsThemeProvider } from "@rneui/themed";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { theme } from "@/theme";
