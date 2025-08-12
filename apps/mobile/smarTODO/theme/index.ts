@@ -54,7 +54,61 @@ const colors = {
   overlay: "rgba(0, 0, 0, 0.5)",
 };
 
-export const theme = createTheme({
+// Dark mode colors
+const darkColors = {
+  // Primary color and variations (slightly brighter for dark mode)
+  primary: "#FF5722",
+  primaryLight: "#FF8A65",
+  primaryDark: "#D84315",
+  primaryVeryLight: "#3D2520",
+
+  // Secondary color
+  secondary: "#2196F3",
+  secondaryLight: "#64B5F6",
+  secondaryDark: "#1565C0",
+
+  // Neutral colors (inverted for dark mode)
+  white: "#000000",
+  black: "#FFFFFF",
+  grey0: "#1A1A1A",
+  grey1: "#2A2A2A",
+  grey2: "#3D3D3D",
+  grey3: "#525252",
+  grey4: "#757575",
+  grey5: "#BDBDBD",
+  greyOutline: "#3D3D3D",
+  searchBg: "#2A2A2A",
+
+  // Semantic colors (adjusted for dark mode)
+  success: "#66BB6A",
+  warning: "#FFA726",
+  error: "#EF5350",
+  info: "#42A5F5",
+
+  // Background colors (dark variants)
+  background: "#121212",
+  backgroundSecondary: "#1E1E1E",
+  backgroundTertiary: "#2A2A2A",
+
+  // Text colors (inverted for dark mode)
+  textPrimary: "#F5F5F5",
+  textSecondary: "#B3B3B3",
+  textTertiary: "#808080",
+  textDisabled: "#525252",
+  textInverse: "#121212",
+
+  // Border colors (darker)
+  border: "#3D3D3D",
+  divider: "#2A2A2A",
+
+  // Shadow colors (lighter for dark mode)
+  shadow: Platform.OS === "ios" ? "#FFFFFF" : "#FFFFFF29",
+
+  // Overlay
+  overlay: "rgba(255, 255, 255, 0.1)",
+};
+
+export const lightTheme = createTheme({
   lightColors: {
     primary: colors.primary,
     secondary: colors.secondary,
@@ -76,11 +130,44 @@ export const theme = createTheme({
   },
 });
 
+// Create dark theme
+export const darkTheme = createTheme({
+  mode: "dark",
+  darkColors: {
+    primary: darkColors.primary,
+    secondary: darkColors.secondary,
+    success: darkColors.success,
+    warning: darkColors.warning,
+    error: darkColors.error,
+    white: darkColors.white,
+    black: darkColors.black,
+    grey0: darkColors.grey0,
+    grey1: darkColors.grey1,
+    grey2: darkColors.grey2,
+    grey3: darkColors.grey3,
+    grey4: darkColors.grey4,
+    grey5: darkColors.grey5,
+    greyOutline: darkColors.greyOutline,
+    searchBg: darkColors.searchBg,
+    background: darkColors.background,
+    divider: darkColors.divider,
+  },
+});
+
+// For backward compatibility, export lightTheme as theme
+export const theme = lightTheme;
+
 // Function to get theme based on color scheme
 export const getTheme = (colorScheme: "light" | "dark" | null) => {
-  // For now, return the light theme regardless of color scheme
-  // Can be extended later to support dark theme
-  return theme;
+  switch (colorScheme) {
+    case "dark":
+      return darkTheme;
+    case "light":
+      return lightTheme;
+    default:
+      // Default to light theme when colorScheme is null or undefined
+      return lightTheme;
+  }
 };
 
 // Export individual color palette for custom usage
