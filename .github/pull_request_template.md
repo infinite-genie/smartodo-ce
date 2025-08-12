@@ -9,7 +9,7 @@
 <!-- Check all that apply -->
 
 - [ ] 📱 Mobile App (`apps/mobile/smarTODO`)
-- [ ] 🌐 Web App (`apps/web`)
+- [ ] 🌐 Web App (`apps/web/smartodo`)
 - [ ] 📚 Shared Packages (`packages/*`)
 - [ ] ⚙️ Configuration (Lerna, workspace, build)
 - [ ] 🔧 Development Tools
