@@ -14,6 +14,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@tamagui/animations-react-native": "^1.132.18",
+    "@tamagui/babel-plugin": "^1.132.18",
     "@tamagui/button": "^1.132.18",
     "@tamagui/config": "^1.132.18",
     "@tamagui/core": "^1.132.18",
