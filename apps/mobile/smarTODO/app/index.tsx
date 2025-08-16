@@ -8,10 +8,13 @@ export default function HomeScreen() {
       backgroundColor="$background"
       justifyContent="center"
       alignItems="center"
+      padding="$4"
+      gap="$4"
     >
       <H1
         color="$primary"
         fontSize="$10"
+        fontFamily="$heading"
         animation="bouncy"
         animateOnly={["transform"]}
         enterStyle={{

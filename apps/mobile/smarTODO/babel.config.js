@@ -10,7 +10,6 @@ module.exports = {
         disableExtraction: process.env.NODE_ENV === "development", // Enable extraction only in production
       },
     ],
-    "expo-router/babel",
     "react-native-reanimated/plugin", // Ensure this is last
   ],
 };
