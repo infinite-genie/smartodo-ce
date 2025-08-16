@@ -14,7 +14,6 @@
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@tamagui/animations-react-native": "^1.132.18",
-    "@tamagui/babel-plugin": "^1.132.18",
     "@tamagui/button": "^1.132.18",
     "@tamagui/config": "^1.132.18",
     "@tamagui/core": "^1.132.18",
@@ -47,7 +46,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@tamagui/babel-plugin": "^1.132.18",
     "@types/react": "~19.0.10",
+    "babel-preset-expo": "^13.2.3",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
