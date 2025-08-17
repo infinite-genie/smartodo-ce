@@ -2,11 +2,11 @@ import { View, Text, Stack } from "@tamagui/core";
 import { Button } from "@tamagui/button";
 import { H2 } from "@tamagui/text";
 import { useState } from "react";
+import { router } from "expo-router";
 import {
   useWindowDimensions,
   ScrollView,
   Image,
-  StyleSheet,
   SafeAreaView,
   NativeSyntheticEvent,
   NativeScrollEvent,
@@ -139,9 +139,7 @@ export default function OnboardingScreen() {
               opacity: 0.9,
             }}
             animation="quick"
-            onPress={() => {
-              // TODO: navigate to Signup screen
-            }}
+            onPress={() => router.push("/signup")}
           >
             Sign Up
           </Button>
@@ -159,9 +157,7 @@ export default function OnboardingScreen() {
               opacity: 0.9,
             }}
             animation="quick"
-            onPress={() => {
-              // TODO: navigate to Login screen
-            }}
+            onPress={() => router.push("/login")}
           >
             Login
           </Button>
@@ -170,7 +166,3 @@ export default function OnboardingScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  // Styles can be kept here for static properties if needed
-});
