@@ -1,6 +1,7 @@
 module.exports = {
   presets: ["babel-preset-expo"],
   plugins: [
+    "expo-router/babel",
     [
       "@tamagui/babel-plugin",
       {
@@ -8,7 +9,6 @@ module.exports = {
           "@tamagui/core",
           "@tamagui/text",
           "@tamagui/button",
-          "@tamagui/lucide-icons",
           "@tamagui/stacks",
           "@tamagui/input",
         ],

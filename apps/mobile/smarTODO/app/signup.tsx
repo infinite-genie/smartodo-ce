@@ -26,6 +26,12 @@ export default function SignupScreen() {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -34,7 +40,6 @@ export default function SignupScreen() {
         {
           email,
           full_name: fullName,
-          created_at: new Date().toISOString(),
           status: "pending",
         },
       ]);
@@ -182,9 +187,7 @@ export default function SignupScreen() {
                     size="$5"
                     placeholder="Enter your full name"
                     value={fullName}
-                    onChangeText={(e: any) =>
-                      setFullName(e.nativeEvent?.text || e)
-                    }
+                    onChangeText={setFullName}
                     autoCapitalize="words"
                     backgroundColor="$gray2"
                     borderWidth={1}
@@ -204,9 +207,7 @@ export default function SignupScreen() {
                     size="$5"
                     placeholder="Enter your email"
                     value={email}
-                    onChangeText={(e: any) =>
-                      setEmail(e.nativeEvent?.text || e)
-                    }
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     backgroundColor="$gray2"

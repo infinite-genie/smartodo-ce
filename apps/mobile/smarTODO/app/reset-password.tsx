@@ -14,6 +14,7 @@ import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { Link, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
 
 export default function ResetPasswordScreen() {
   const [email, setEmail] = useState("");
@@ -31,9 +32,22 @@ export default function ResetPasswordScreen() {
       return;
     }
 
+    const appUrl =
+      Constants.expoConfig?.extra?.EXPO_PUBLIC_APP_URL ||
+      Constants.manifest?.extra?.EXPO_PUBLIC_APP_URL ||
+      "https://smartodo.app"; // fallback URL
+
+    if (!appUrl) {
+      Alert.alert(
+        "Configuration Error",
+        "App URL is not configured. Please contact support.",
+      );
+      return;
+    }
+
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.EXPO_PUBLIC_APP_URL}/update-password`,
+      redirectTo: `${appUrl}/update-password`,
     });
 
     if (error) {
@@ -110,9 +124,7 @@ export default function ResetPasswordScreen() {
                       size="$5"
                       placeholder="Enter your email"
                       value={email}
-                      onChangeText={(e: any) =>
-                        setEmail(e.nativeEvent?.text || e)
-                      }
+                      onChangeText={setEmail}
                       keyboardType="email-address"
                       autoCapitalize="none"
                       autoFocus

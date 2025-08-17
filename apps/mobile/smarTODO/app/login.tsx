@@ -25,6 +25,12 @@ export default function LoginScreen() {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
     const { error, data } = await supabase.auth.signInWithPassword({
       email,
@@ -85,9 +91,7 @@ export default function LoginScreen() {
                     size="$5"
                     placeholder="Enter your email"
                     value={email}
-                    onChangeText={(e: any) =>
-                      setEmail(e.nativeEvent?.text || e)
-                    }
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     backgroundColor="$gray2"
@@ -109,9 +113,7 @@ export default function LoginScreen() {
                     placeholder="Enter your password"
                     value={password}
                     type="password"
-                    onChangeText={(e: any) =>
-                      setPassword(e.nativeEvent?.text || e)
-                    }
+                    onChangeText={setPassword}
                     secureTextEntry
                     autoCapitalize="none"
                     backgroundColor="$gray2"
