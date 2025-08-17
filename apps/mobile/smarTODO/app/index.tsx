@@ -63,8 +63,7 @@ export default function OnboardingScreen() {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
+            onMomentumScrollEnd={handleScroll}
           >
             {onboardingData.map((item, index) => (
               <View
@@ -84,6 +83,7 @@ export default function OnboardingScreen() {
                   accessible
                   accessibilityRole="image"
                   accessibilityLabel={item.title}
+                  accessibilityIgnoresInvertColors
                 />
                 <Stack gap="$3" alignItems="center" marginTop="$4">
                   <H2
