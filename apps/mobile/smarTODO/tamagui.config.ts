@@ -1,5 +1,5 @@
 import { config } from "@tamagui/config";
-import { createTamagui } from "@tamagui/core";
+import { createTamagui, createFont } from "@tamagui/core";
 
 // Linear interpolation helper
 const lerp = (min: number, max: number, t: number): number => {
@@ -106,8 +106,92 @@ const hslToHex = (h: number, s: number, l: number) => {
 const lightColorScale = generateColorScale("#E64D13", false);
 const darkColorScale = generateColorScale("#E64D13", true);
 
+// Create Varela Round font configuration
+const varelaRoundFont = createFont({
+  family: "VarelaRound",
+  size: {
+    1: 11,
+    2: 12,
+    3: 13,
+    4: 14,
+    5: 15,
+    6: 16,
+    7: 18,
+    8: 20,
+    9: 24,
+    10: 27,
+    11: 32,
+    12: 40,
+    13: 48,
+    14: 56,
+    15: 64,
+    16: 72,
+  },
+  lineHeight: {
+    1: 17,
+    2: 20,
+    3: 22,
+    4: 24,
+    5: 26,
+    6: 28,
+    7: 30,
+    8: 33,
+    9: 38,
+    10: 44,
+    11: 50,
+    12: 60,
+    13: 72,
+    14: 84,
+    15: 96,
+    16: 108,
+  },
+  weight: {
+    1: "400",
+    2: "400",
+    3: "400",
+    4: "400",
+    5: "400",
+    6: "400",
+    7: "400",
+    8: "400",
+    9: "400",
+  },
+  letterSpacing: {
+    1: 0,
+    2: -0.1,
+    3: -0.2,
+    4: -0.3,
+    5: -0.4,
+    6: -0.5,
+    7: -0.6,
+    8: -0.7,
+    9: -0.8,
+    10: -0.9,
+    11: -1,
+    12: -1.1,
+    13: -1.2,
+    14: -1.3,
+    15: -1.4,
+    16: -1.5,
+  },
+  face: {
+    400: { normal: "VarelaRound" },
+  },
+});
+
 const tamaguiConfig = createTamagui({
   ...config,
+  fonts: {
+    heading: varelaRoundFont,
+    body: varelaRoundFont,
+    mono: createFont({
+      ...varelaRoundFont,
+      family: "SpaceMono",
+      face: {
+        400: { normal: "SpaceMono" },
+      },
+    }),
+  },
   themes: {
     ...config.themes,
     light: {
@@ -128,6 +212,9 @@ const tamaguiConfig = createTamagui({
       colorTransparent: "rgba(0,0,0,0)",
       placeholderColor: "#999999",
       outlineColor: lightColorScale.color9,
+      primary: "#E64D13",
+      primaryDark: "#C73E0F",
+      primaryLight: "#F55D1C",
     },
     dark: {
       ...config.themes.dark,
@@ -147,6 +234,9 @@ const tamaguiConfig = createTamagui({
       colorTransparent: "rgba(255,255,255,0)",
       placeholderColor: "#666666",
       outlineColor: darkColorScale.color9,
+      primary: "#E64D13",
+      primaryDark: "#C73E0F",
+      primaryLight: "#F55D1C",
     },
   },
   tokens: {
@@ -162,7 +252,7 @@ const tamaguiConfig = createTamagui({
 
 export type AppConfig = typeof tamaguiConfig;
 
-declare module "@tamagui/core" {
+declare module "tamagui" {
   interface TamaguiCustomConfig extends AppConfig {}
 }
 
