@@ -45,17 +45,11 @@ export default function SignupScreen() {
       ]);
 
       if (error) {
-        // If table doesn't exist, just show success (for demo purposes)
-        if (error.code === "42P01") {
-          setSubmitted(true);
-          Alert.alert(
-            "Success!",
-            "You have been added to our waitlist. We will notify you when your account is ready!",
-            [{ text: "OK", onPress: () => router.replace("/") }],
-          );
-        } else {
-          Alert.alert("Error", error.message);
-        }
+        console.error("Waitlist signup error:", error);
+        Alert.alert(
+          "Error",
+          error.message || "Failed to join waitlist. Please try again.",
+        );
       } else {
         setSubmitted(true);
         Alert.alert(
@@ -64,17 +58,25 @@ export default function SignupScreen() {
           [{ text: "OK", onPress: () => router.replace("/") }],
         );
       }
-    } catch {
-      // Fallback for demo purposes if waitlist table doesn't exist
-      setSubmitted(true);
+    } catch (err) {
+      console.error("Unexpected error during signup:", err);
       Alert.alert(
-        "Success!",
-        "You have been added to our waitlist. We will notify you when your account is ready!",
-        [{ text: "OK", onPress: () => router.replace("/") }],
+        "Connection Error",
+        "Unable to connect to the server. Please check your internet connection and try again.",
+        [
+          {
+            text: "Retry",
+            onPress: () => handleWaitlistSignup(),
+          },
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
       );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (submitted) {
