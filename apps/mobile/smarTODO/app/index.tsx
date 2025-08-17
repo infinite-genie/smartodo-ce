@@ -127,7 +127,7 @@ export default function OnboardingScreen() {
           </Stack>
         </View>
 
-        <Stack gap="$4" padding="$6" paddingBottom="$20">
+        <Stack gap="$4" padding="$6" paddingBottom="$10">
           <Button
             size="$5"
             backgroundColor="$primary"
