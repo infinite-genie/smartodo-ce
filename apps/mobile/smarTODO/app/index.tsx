@@ -33,6 +33,15 @@ const onboardingData = [
   },
 ];
 
+/**
+ * Onboarding screen that displays a horizontal, paged carousel of slides with sign-up and login actions.
+ *
+ * Renders slides from `onboardingData` (image, title, description) sized to the current window width. The component
+ * tracks the visible slide and updates an internal `currentIndex` when the user scrolls horizontally; that index drives
+ * the page indicator dots. Slide images are marked accessible with an `accessibilityLabel` set to each slide's title.
+ *
+ * @returns The React element for the onboarding screen.
+ */
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: winWidth } = useWindowDimensions();
