@@ -212,6 +212,9 @@ const tamaguiConfig = createTamagui({
       colorTransparent: "rgba(0,0,0,0)",
       placeholderColor: "#999999",
       outlineColor: lightColorScale.color9,
+      primary: "#E64D13",
+      primaryDark: "#C73E0F",
+      primaryLight: "#F55D1C",
     },
     dark: {
       ...config.themes.dark,
@@ -231,6 +234,9 @@ const tamaguiConfig = createTamagui({
       colorTransparent: "rgba(255,255,255,0)",
       placeholderColor: "#666666",
       outlineColor: darkColorScale.color9,
+      primary: "#E64D13",
+      primaryDark: "#C73E0F",
+      primaryLight: "#F55D1C",
     },
   },
   tokens: {
@@ -246,7 +252,7 @@ const tamaguiConfig = createTamagui({
 
 export type AppConfig = typeof tamaguiConfig;
 
-declare module "@tamagui/core" {
+declare module "tamagui" {
   interface TamaguiCustomConfig extends AppConfig {}
 }
 

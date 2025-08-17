@@ -20,10 +20,7 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider
-      config={tamaguiConfig}
-      defaultTheme={colorScheme === "dark" ? "dark" : "light"}
-    >
+    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
       <Slot />
       <StatusBar style="auto" />
     </TamaguiProvider>
