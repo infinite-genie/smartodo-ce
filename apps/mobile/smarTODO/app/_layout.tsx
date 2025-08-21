@@ -5,7 +5,6 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { TamaguiProvider } from "@tamagui/core";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
 import tamaguiConfig from "../tamagui.config";
 
 /**
@@ -18,7 +17,6 @@ import tamaguiConfig from "../tamagui.config";
  * @returns The root layout element to render when app fonts have finished loading.
  */
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     VarelaRound: VarelaRound_400Regular,
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
