@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.smartodo.smartodo"
+      "bundleIdentifier": "com.smartodo.smartodo",
+      "associatedDomains": ["applinks:smartodo.app"]
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +19,21 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.smartodo.smartodo"
+      "package": "com.smartodo.smartodo",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "smartodo.app",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
