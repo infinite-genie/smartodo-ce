@@ -6,7 +6,7 @@ module.exports = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(react-native|@react-native|@react-navigation|expo|@expo|@unimodules|@tamagui|@supabase|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage|react-native-url-polyfill|react-native-get-random-values)/)",
+    "node_modules/(?!(react-native|@react-native|@react-navigation|expo|@expo|expo-modules|@unimodules|@tamagui|@supabase|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage|react-native-url-polyfill|react-native-get-random-values)/)",
   ],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",

@@ -4,7 +4,8 @@
 
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  const normalized = email.trim().toLowerCase();
+  return emailRegex.test(normalized);
 };
 
 export const validatePassword = (

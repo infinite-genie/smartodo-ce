@@ -1,8 +1,9 @@
 // Jest setup file for React Native testing
 
 // Mock environment variables
-process.env.EXPO_PUBLIC_SUPABASE_URL = "https://test-supabase-url.supabase.co";
-process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key-12345";
+process.env.EXPO_PUBLIC_SUPABASE_URL = "TEST_SUPABASE_URL_PLACEHOLDER";
+process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY =
+  "TEST_SUPABASE_ANON_KEY_PLACEHOLDER";
 
 // Mock polyfills
 jest.mock("react-native-url-polyfill/auto", () => {});
