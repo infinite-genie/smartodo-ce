@@ -1,5 +1,8 @@
 // Jest setup file for React Native testing
 
+// Extend expect with jest-native matchers
+import "@testing-library/jest-native/extend-expect";
+
 // Mock environment variables
 process.env.EXPO_PUBLIC_SUPABASE_URL = "TEST_SUPABASE_URL_PLACEHOLDER";
 process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY =
