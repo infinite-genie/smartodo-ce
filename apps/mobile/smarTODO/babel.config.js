@@ -6,6 +6,7 @@ module.exports = {
       "@tamagui/babel-plugin",
       {
         components: [
+          "@tamagui/config",
           "@tamagui/core",
           "@tamagui/text",
           "@tamagui/button",

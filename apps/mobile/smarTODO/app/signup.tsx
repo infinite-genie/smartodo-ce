@@ -35,14 +35,17 @@ export default function SignupScreen() {
     setLoading(true);
 
     try {
-      // Store waitlist entry in database
-      const { error } = await supabase.from("waitlist").insert([
+      // Use upsert to make operation idempotent - won't fail on duplicate email
+      const { error } = await supabase.from("waitlist").upsert(
         {
           email,
           full_name: fullName,
-          status: "pending",
+          // Don't set status - let database default apply
         },
-      ]);
+        {
+          onConflict: "email", // Update existing entry if email exists
+        },
+      );
 
       if (error) {
         console.error("Waitlist signup error:", error);

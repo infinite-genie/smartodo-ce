@@ -14,11 +14,13 @@ import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
 
 export default function UpdatePasswordScreen() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
   const params = useLocalSearchParams();
 
   useEffect(() => {
@@ -27,13 +29,65 @@ export default function UpdatePasswordScreen() {
   }, []);
 
   const checkSession = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
+    try {
+      // First, try to get the URL that opened the app
+      const url = await Linking.getInitialURL();
+
+      if (url) {
+        const parsedUrl = new URL(url);
+
+        // Check for 'code' query parameter (magic link exchange)
+        const code = parsedUrl.searchParams.get("code");
+        if (code) {
+          const { data, error } =
+            await supabase.auth.exchangeCodeForSession(code);
+          if (!error && data.session) {
+            setSessionReady(true);
+            return;
+          }
+        }
+
+        // Check for access_token and refresh_token in fragment
+        const hashParams = new URLSearchParams(parsedUrl.hash.slice(1));
+        const accessToken = hashParams.get("access_token");
+        const refreshToken = hashParams.get("refresh_token");
+
+        if (accessToken && refreshToken) {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (!error && data.session) {
+            setSessionReady(true);
+            return;
+          }
+        }
+      }
+
+      // If no valid session could be established, check existing session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        setSessionReady(true);
+      } else {
+        Alert.alert(
+          "Session Expired",
+          "Your password reset link has expired or is invalid. Please request a new one.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.replace("/reset-password"),
+            },
+          ],
+        );
+      }
+    } catch (error) {
+      console.error("Error checking session:", error);
       Alert.alert(
-        "Session Expired",
-        "Your password reset link has expired. Please request a new one.",
+        "Error",
+        "Failed to verify your reset link. Please try again.",
         [
           {
             text: "OK",
