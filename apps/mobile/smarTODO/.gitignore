@@ -36,7 +36,11 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Tamagui generated files
+.tamagui/
+
 app-example
 android/
 ios/
 .env
+coverage/
