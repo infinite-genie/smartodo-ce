@@ -3,7 +3,6 @@ import { VarelaRound_400Regular } from "@expo-google-fonts/varela-round";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import { TamaguiProvider } from "@tamagui/core";
 import { AuthProvider } from "../contexts/AuthContext";
@@ -29,7 +28,7 @@ export default function RootLayout() {
   });
 
   // Don't hide splash screen here - let the index screen handle it
-  // after both fonts and auth state are ready
+  // after auth state is also ready
 
   if (!fontsLoaded) {
     return null;
