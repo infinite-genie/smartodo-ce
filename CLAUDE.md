@@ -75,10 +75,15 @@ render(<AppLayout><Text>Test</Text></AppLayout>);
 
 #### 3. Custom Hooks (`hooks/`)
 
-**🎯 RECOMMENDED: Use @testing-library/react-hooks**
+**🎯 RECOMMENDED: Use renderHook from @testing-library/react-native**
+
+> **Note:** The standalone `@testing-library/react-hooks` package is deprecated. The `renderHook` and `act` utilities are now included in `@testing-library/react-native`. If you have the standalone package installed, you can safely uninstall it.
 
 ```typescript
 // ✅ DO: Test hook logic and state management
+import { renderHook, act } from "@testing-library/react-native";
+import { useAuth } from "../hooks/useAuth";
+
 describe("useAuth", () => {
   it("should handle authentication state", () => {
     const { result } = renderHook(() => useAuth());
