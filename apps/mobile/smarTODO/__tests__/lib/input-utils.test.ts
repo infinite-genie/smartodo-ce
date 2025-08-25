@@ -1,5 +1,16 @@
 import { handleInputChange } from "../../lib/input-utils";
-import { NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
+import type {
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+} from "react-native";
+import type { FormEvent } from "react";
+
+// Structural interface to avoid DOM dependency
+interface InputElement extends EventTarget {
+  value: string;
+  tagName: string;
+  nodeType: number;
+}
 
 describe("Input Utils", () => {
   describe("handleInputChange", () => {
@@ -93,7 +104,10 @@ describe("Input Utils", () => {
         value: testValue,
         tagName: "INPUT",
         nodeType: 1,
-      } as HTMLInputElement;
+        addEventListener: () => {},
+        dispatchEvent: () => true,
+        removeEventListener: () => {},
+      } as InputElement;
 
       const formEvent = {
         currentTarget: mockInput,
@@ -111,7 +125,7 @@ describe("Input Utils", () => {
         timeStamp: Date.now(),
         type: "change",
         nativeEvent: {} as any,
-      } as React.FormEvent<HTMLInputElement>;
+      } as FormEvent<InputElement>;
 
       handleInputChange(mockSetState, formEvent);
 
@@ -124,7 +138,10 @@ describe("Input Utils", () => {
         value: "",
         tagName: "INPUT",
         nodeType: 1,
-      } as HTMLInputElement;
+        addEventListener: () => {},
+        dispatchEvent: () => true,
+        removeEventListener: () => {},
+      } as InputElement;
 
       const formEvent = {
         currentTarget: mockInput,
@@ -142,7 +159,7 @@ describe("Input Utils", () => {
         timeStamp: Date.now(),
         type: "change",
         nativeEvent: {} as any,
-      } as React.FormEvent<HTMLInputElement>;
+      } as FormEvent<InputElement>;
 
       handleInputChange(mockSetState, formEvent);
 

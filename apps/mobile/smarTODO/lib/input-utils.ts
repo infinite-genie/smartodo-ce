@@ -1,4 +1,13 @@
-import { NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
+import type {
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+} from "react-native";
+import type { FormEvent } from "react";
+
+// Structural interface to avoid DOM dependency
+interface InputElement extends EventTarget {
+  value: string;
+}
 
 /**
  * Universal input change handler for Tamagui Input components
@@ -11,7 +20,7 @@ export const handleInputChange = (
   setStateMethod: (value: string) => void,
   e:
     | NativeSyntheticEvent<TextInputChangeEventData>
-    | React.FormEvent<HTMLInputElement>
+    | FormEvent<InputElement>
     | string,
 ) => {
   // Handle direct string value (Tamagui's typical pattern)
