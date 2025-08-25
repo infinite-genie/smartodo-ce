@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import {
   Alert,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@tamagui/core";
 import { YStack, XStack } from "@tamagui/stacks";
 import { Button } from "@tamagui/button";
@@ -137,12 +137,18 @@ export default function UpdatePasswordScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "android" ? -100 : 0}
       >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
           <YStack flex={1} padding="$6" backgroundColor="$background">
             <XStack marginBottom="$4" alignItems="center">
               <Button
