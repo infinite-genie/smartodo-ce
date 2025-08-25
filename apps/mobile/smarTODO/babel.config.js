@@ -11,6 +11,9 @@ module.exports = {
           "@tamagui/button",
           "@tamagui/stacks",
           "@tamagui/input",
+          "@tamagui/avatar",
+          "@tamagui/separator",
+          "@tamagui/lucide-icons",
         ],
         config: "./tamagui.config.ts", // Path to your Tamagui config
         logTimings: true, // Optional: see build time logs

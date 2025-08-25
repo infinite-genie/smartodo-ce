@@ -78,6 +78,34 @@ jest.mock("@supabase/supabase-js", () => ({
   })),
 }));
 
+// Mock Tamagui Avatar component
+jest.mock("@tamagui/avatar", () => ({
+  Avatar: Object.assign(({ children }) => children, {
+    Image: ({ children }) => children,
+    Fallback: ({ children }) => children,
+  }),
+}));
+
+// Mock Tamagui Separator component
+jest.mock("@tamagui/separator", () => ({
+  Separator: () => null,
+}));
+
+// Mock Tamagui Lucide Icons
+jest.mock("@tamagui/lucide-icons", () => {
+  const MockIcon = () => null;
+  return {
+    Home: MockIcon,
+    CheckSquare: MockIcon,
+    Calendar: MockIcon,
+    Settings: MockIcon,
+    LogOut: MockIcon,
+    User: MockIcon,
+    Plus: MockIcon,
+    Menu: MockIcon,
+  };
+});
+
 // Mock expo-router
 jest.mock("expo-router", () => ({
   router: {
