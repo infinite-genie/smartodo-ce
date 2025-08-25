@@ -13,6 +13,7 @@ import { H1 } from "@tamagui/text";
 import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { Link, router } from "expo-router";
+import { handleInputChange } from "../lib/input-utils";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -97,7 +98,7 @@ export default function LoginScreen() {
                     size="$5"
                     placeholder="Enter your email"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(e) => handleInputChange(setEmail, e)}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     backgroundColor="$gray2"
@@ -119,7 +120,7 @@ export default function LoginScreen() {
                     placeholder="Enter your password"
                     value={password}
                     type="password"
-                    onChangeText={setPassword}
+                    onChangeText={(e) => handleInputChange(setPassword, e)}
                     secureTextEntry
                     autoCapitalize="none"
                     backgroundColor="$gray2"

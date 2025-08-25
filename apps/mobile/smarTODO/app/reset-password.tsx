@@ -15,6 +15,7 @@ import { supabase } from "../lib/supabase";
 import { Link, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import { handleInputChange } from "../lib/input-utils";
 
 export default function ResetPasswordScreen() {
   const [email, setEmail] = useState("");
@@ -130,7 +131,7 @@ export default function ResetPasswordScreen() {
                       size="$5"
                       placeholder="Enter your email"
                       value={email}
-                      onChangeText={setEmail}
+                      onChangeText={(e) => handleInputChange(setEmail, e)}
                       keyboardType="email-address"
                       autoCapitalize="none"
                       autoFocus
