@@ -2,10 +2,16 @@ import { useFonts } from "expo-font";
 import { VarelaRound_400Regular } from "@expo-google-fonts/varela-round";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 import "react-native-reanimated";
 import { TamaguiProvider } from "@tamagui/core";
+import { AuthProvider } from "../contexts/AuthContext";
 
 import tamaguiConfig from "../tamagui.config";
+
+// Prevent the splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
 
 /**
  * App root layout that provides theming and loads app fonts before rendering.
@@ -22,14 +28,19 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  // Don't hide splash screen here - let the index screen handle it
+  // after both fonts and auth state are ready
+
   if (!fontsLoaded) {
     return null;
   }
 
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
-      <Slot />
-      <StatusBar style="auto" />
+      <AuthProvider>
+        <Slot />
+        <StatusBar style="auto" />
+      </AuthProvider>
     </TamaguiProvider>
   );
 }
