@@ -51,7 +51,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const overlayAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: opacity.value,
-      pointerEvents: opacity.value > 0 ? "auto" : "none",
     };
   });
 
@@ -88,6 +87,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           },
           overlayAnimatedStyle,
         ]}
+        pointerEvents={isOpen ? "auto" : "none"}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Close sidebar"
       >
         <Pressable style={{ flex: 1 }} onPress={onClose} />
       </Animated.View>

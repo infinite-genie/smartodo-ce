@@ -79,12 +79,19 @@ jest.mock("@supabase/supabase-js", () => ({
 }));
 
 // Mock Tamagui Avatar component
-jest.mock("@tamagui/avatar", () => ({
-  Avatar: Object.assign(({ children }) => children, {
-    Image: ({ children }) => children,
-    Fallback: ({ children }) => children,
-  }),
-}));
+jest.mock("@tamagui/avatar", () => {
+  const MockImage = ({ children }) => children;
+  const MockFallback = ({ children }) => children;
+
+  return {
+    Avatar: Object.assign(({ children }) => children, {
+      Image: MockImage,
+      Fallback: MockFallback,
+    }),
+    AvatarImage: MockImage,
+    AvatarFallback: MockFallback,
+  };
+});
 
 // Mock Tamagui Separator component
 jest.mock("@tamagui/separator", () => ({
@@ -103,6 +110,7 @@ jest.mock("@tamagui/lucide-icons", () => {
     User: MockIcon,
     Plus: MockIcon,
     Menu: MockIcon,
+    X: MockIcon,
   };
 });
 
