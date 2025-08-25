@@ -60,6 +60,7 @@ export default function AppLayout({
               backgroundColor="transparent"
               hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
               pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              accessibilityLabel="Open navigation menu"
             >
               <Menu size={24} color="white" />
             </Button>

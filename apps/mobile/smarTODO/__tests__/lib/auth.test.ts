@@ -122,6 +122,23 @@ describe("Authentication Functions", () => {
       expect(result.success).toBe(false);
       expect(result.message).toBe("User already exists");
     });
+
+    it("should handle unexpected errors during sign up", async () => {
+      (supabase.auth.signUp as jest.Mock).mockRejectedValue(
+        new Error("Network error"),
+      );
+
+      const result = await signUp(
+        "user@example.com",
+        "password123",
+        "John Doe",
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe(
+        "An unexpected error occurred during sign up",
+      );
+    });
   });
 
   describe("signOut", () => {
@@ -146,6 +163,19 @@ describe("Authentication Functions", () => {
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Sign out failed");
+    });
+
+    it("should handle unexpected errors during sign out", async () => {
+      (supabase.auth.signOut as jest.Mock).mockRejectedValue(
+        new Error("Network error"),
+      );
+
+      const result = await signOut();
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe(
+        "An unexpected error occurred during sign out",
+      );
     });
   });
 
@@ -181,6 +211,22 @@ describe("Authentication Functions", () => {
       expect(result.success).toBe(false);
       expect(result.message).toBe("User not found");
     });
+
+    it("should handle unexpected errors during password reset", async () => {
+      (supabase.auth.resetPasswordForEmail as jest.Mock).mockRejectedValue(
+        new Error("Network error"),
+      );
+
+      const result = await resetPassword(
+        "user@example.com",
+        "https://app.example.com/reset",
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe(
+        "An unexpected error occurred during password reset",
+      );
+    });
   });
 
   describe("updatePassword", () => {
@@ -207,6 +253,19 @@ describe("Authentication Functions", () => {
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Password update failed");
+    });
+
+    it("should handle unexpected errors during password update", async () => {
+      (supabase.auth.updateUser as jest.Mock).mockRejectedValue(
+        new Error("Network error"),
+      );
+
+      const result = await updatePassword("newPassword123");
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe(
+        "An unexpected error occurred during password update",
+      );
     });
   });
 
@@ -257,6 +316,20 @@ describe("Authentication Functions", () => {
       expect(result.success).toBe(false);
       expect(result.message).toBe("Database error");
     });
+
+    it("should handle unexpected errors during waitlist addition", async () => {
+      const mockInsert = jest
+        .fn()
+        .mockRejectedValue(new Error("Network error"));
+      (supabase.from as jest.Mock).mockReturnValue({
+        insert: mockInsert,
+      });
+
+      const result = await addToWaitlist("user@example.com", "Jane Doe");
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe("An unexpected error occurred");
+    });
   });
 
   describe("getCurrentUser", () => {
@@ -285,9 +358,19 @@ describe("Authentication Functions", () => {
 
     it("should return null on error", async () => {
       (supabase.auth.getUser as jest.Mock).mockResolvedValue({
-        data: null,
+        data: { user: null },
         error: { message: "Session expired" },
       });
+
+      const user = await getCurrentUser();
+
+      expect(user).toBeNull();
+    });
+
+    it("should return null on unexpected error", async () => {
+      (supabase.auth.getUser as jest.Mock).mockRejectedValue(
+        new Error("Network error"),
+      );
 
       const user = await getCurrentUser();
 

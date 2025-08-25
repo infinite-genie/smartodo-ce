@@ -1,5 +1,13 @@
 // Jest setup file for React Native testing
 
+// Mock global DOM/Browser APIs that Tamagui expects
+global.addEventListener = jest.fn();
+global.removeEventListener = jest.fn();
+global.window = global.window || {};
+global.document = global.document || { addEventListener: jest.fn() };
+global.requestAnimationFrame = jest.fn((cb) => setTimeout(cb, 0));
+global.cancelAnimationFrame = jest.fn();
+
 // Extend expect with jest-native matchers
 import "@testing-library/jest-native/extend-expect";
 
@@ -140,6 +148,29 @@ jest.mock("react-native-safe-area-context", () => {
     SafeAreaConsumer: ({ children }) => children(inset),
     SafeAreaView: ({ children }) => children,
     useSafeAreaInsets: () => inset,
+  };
+});
+
+// Mock react-native-reanimated
+jest.mock("react-native-reanimated", () => {
+  const MockedAnimated = {
+    View: ({ children, ...props }) => {
+      const React = require("react");
+      const { View } = require("react-native");
+      return React.createElement(View, props, children);
+    },
+    useSharedValue: jest.fn((value) => ({ value })),
+    useAnimatedStyle: jest.fn((callback) => callback()),
+    withTiming: jest.fn((value) => value),
+    interpolate: jest.fn(),
+    Extrapolate: { CLAMP: "clamp" },
+    runOnJS: jest.fn((fn) => fn),
+  };
+
+  return {
+    __esModule: true,
+    default: MockedAnimated,
+    ...MockedAnimated,
   };
 });
 
