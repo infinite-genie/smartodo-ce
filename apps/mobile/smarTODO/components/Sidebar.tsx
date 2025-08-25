@@ -12,8 +12,11 @@ import { Button } from "@tamagui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@tamagui/avatar";
 import { Separator } from "@tamagui/separator";
 import { supabase } from "../lib/supabase";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { Home, User, X } from "@tamagui/lucide-icons";
+
+// Define allowed navigation routes (based on existing app screens)
+type NavigationRoute = "/home";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -24,13 +27,14 @@ interface SidebarProps {
 interface MenuItem {
   icon: React.ComponentType<any>;
   label: string;
-  onPress: () => void;
+  route: NavigationRoute;
   color?: string;
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const translateX = useSharedValue(-280);
   const opacity = useSharedValue(0);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isOpen) {
@@ -55,19 +59,43 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   });
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    // Close sidebar first for immediate feedback
     onClose();
-    router.replace("/");
+
+    try {
+      await supabase.auth.signOut();
+      // Use setTimeout to allow sidebar animation to complete
+      setTimeout(() => {
+        router.replace("/");
+      }, 300); // Full sidebar animation duration
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Still navigate on error to prevent getting stuck
+      setTimeout(() => {
+        router.replace("/");
+      }, 300);
+    }
+  };
+
+  const handleNavigation = (route: NavigationRoute) => {
+    // Close sidebar first for immediate visual feedback
+    onClose();
+
+    // Only navigate if we're not already on the target route
+    if (pathname !== route) {
+      // Use setTimeout to ensure sidebar closing animation starts
+      // before navigation to prevent visual conflicts
+      setTimeout(() => {
+        router.push(route);
+      }, 150); // Half of sidebar animation duration
+    }
   };
 
   const menuItems: MenuItem[] = [
     {
       icon: Home,
       label: "Home",
-      onPress: () => {
-        onClose();
-        router.push("/home");
-      },
+      route: "/home",
     },
   ];
 
@@ -174,7 +202,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     paddingHorizontal="$4"
                     paddingVertical="$3"
                     marginVertical="$1"
-                    onPress={item.onPress}
+                    onPress={() => handleNavigation(item.route)}
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "$gray3" }}
                     pressStyle={{ backgroundColor: "$gray4" }}
