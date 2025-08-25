@@ -8,10 +8,10 @@ This React Native + Tamagui project uses a **hybrid testing strategy** optimized
 
 ### Testing Architecture
 
-```
+```text
 __tests__/
-├── lib/                    # Pure function tests (Target: 95%+)
-├── components/             # Component logic tests (Target: 80%+)
+├── lib/                    # Pure function tests (Target: 90%+)
+├── components/             # Component logic tests (Target: 50%+)
 ├── hooks/                  # Custom hook tests (Target: 85%+)
 └── integration/            # API/flow tests (Target: Key flows)
 ```
@@ -26,7 +26,7 @@ npm test
 npm run test:coverage
 
 # Run specific test pattern
-npm test -- --testPathPatterns="validation"
+npm test -- --testPathPattern="validation"
 
 # Run in watch mode
 npm test -- --watch
@@ -103,14 +103,24 @@ describe("useAuth", () => {
 
 ```typescript
 // ✅ DO: Mock Supabase and test error handling
-jest.mock("../lib/supabase", () => ({
-  supabase: {
-    auth: {
-      signIn: jest.fn(),
-      signOut: jest.fn(),
+jest.mock("../lib/supabase", () => {
+  const mockChainable = {
+    from: jest.fn(() => mockChainable),
+    select: jest.fn(() => mockChainable),
+    eq: jest.fn(() => mockChainable),
+    single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+  };
+
+  return {
+    supabase: {
+      auth: {
+        signIn: jest.fn(),
+        signOut: jest.fn(),
+      },
+      from: mockChainable.from,
     },
-  },
-}));
+  };
+});
 ```
 
 ### Current Mocking Setup
@@ -119,13 +129,19 @@ The project has robust mocking in `jest.setup.js`:
 
 ```javascript
 // ✅ Well-configured mocks for:
-- Tamagui components (simplified rendering)
-- React Native Reanimated (animation mocks)
-- Expo modules (fonts, linking, constants)
-- Supabase (complete auth/db mocking)
-- SafeAreaView (cross-platform safe areas)
-- React Navigation (routing mocks)
+- react-native-get-random-values
+- Tamagui components (@tamagui/avatar, @tamagui/separator, @tamagui/lucide-icons)
+- Expo modules:
+  - expo-font (loadAsync, isLoaded)
+  - expo-linking (createURL, addEventListener)
+  - expo-constants (__esModule/default.expoConfig.extra)
+- Expo-Router (router.push)
+- Supabase (@supabase/supabase-js)
+- SafeAreaView (SafeAreaProvider, SafeAreaConsumer, SafeAreaView, useSafeAreaInsets)
+- React Native Reanimated
 ```
+
+> **Note:** No React Navigation mocks are configured in jest.setup.js. Any per-test mocks should be added as needed.
 
 ### Writing New Tests
 
@@ -166,12 +182,13 @@ export default function NewComponent({ title, onPress }: Props) {
   const handleToggle = () => setIsActive(!isActive);
 
   return (
-    <Button onPress={onPress} testID="new-component">
+    <Button onPress={onPress} accessibilityLabel="Action button">
       <Text>{title}</Text>
     </Button>
   );
 }
 
+// Prefer accessibility props over testID; avoid UI rendering in tests.
 // Test: __tests__/components/component-logic.test.ts
 describe("NewComponent Logic", () => {
   it("should toggle active state", () => {
