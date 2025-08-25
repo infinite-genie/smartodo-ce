@@ -13,6 +13,7 @@ import { H1 } from "@tamagui/text";
 import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { Link, router } from "expo-router";
+import { handleInputChange } from "../lib/input-utils";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -198,7 +199,7 @@ export default function SignupScreen() {
                     size="$5"
                     placeholder="Enter your full name"
                     value={fullName}
-                    onChangeText={setFullName}
+                    onChangeText={(e) => handleInputChange(setFullName, e)}
                     autoCapitalize="words"
                     backgroundColor="$gray2"
                     borderWidth={1}
@@ -218,7 +219,7 @@ export default function SignupScreen() {
                     size="$5"
                     placeholder="Enter your email"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(e) => handleInputChange(setEmail, e)}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     backgroundColor="$gray2"

@@ -15,6 +15,7 @@ import { supabase } from "../lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
+import { handleInputChange } from "../lib/input-utils";
 
 export default function UpdatePasswordScreen() {
   const [newPassword, setNewPassword] = useState("");
@@ -198,7 +199,7 @@ export default function UpdatePasswordScreen() {
                       size="$5"
                       placeholder="Enter new password"
                       value={newPassword}
-                      onChangeText={setNewPassword}
+                      onChangeText={(e) => handleInputChange(setNewPassword, e)}
                       type="password"
                       secureTextEntry
                       autoCapitalize="none"
@@ -224,7 +225,9 @@ export default function UpdatePasswordScreen() {
                       size="$5"
                       placeholder="Confirm new password"
                       value={confirmPassword}
-                      onChangeText={setConfirmPassword}
+                      onChangeText={(e) =>
+                        handleInputChange(setConfirmPassword, e)
+                      }
                       type="password"
                       secureTextEntry
                       autoCapitalize="none"
