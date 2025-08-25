@@ -14,6 +14,7 @@ module.exports = {
   collectCoverage: false,
   collectCoverageFrom: [
     "lib/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
     "!lib/supabase.ts", // Exclude configuration file
     "!**/*.d.ts",
     "!**/node_modules/**",
