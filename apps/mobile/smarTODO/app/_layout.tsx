@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { TamaguiProvider } from "@tamagui/core";
 import { AuthProvider } from "../contexts/AuthContext";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import tamaguiConfig from "../tamagui.config";
 
@@ -35,34 +36,36 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-          <Stack.Screen name="signup" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="reset-password"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="update-password"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="home" options={{ headerShown: false }} />
-          <Stack.Screen name="profile" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="profileEdit"
-            options={{
-              presentation: "modal",
-              headerShown: false,
-              animation: "slide_from_bottom",
-            }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
-      </AuthProvider>
-    </TamaguiProvider>
+    <KeyboardProvider>
+      <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
+        <AuthProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="signup" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="reset-password"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="update-password"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="home" options={{ headerShown: false }} />
+            <Stack.Screen name="profile" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="profileEdit"
+              options={{
+                presentation: "modal",
+                headerShown: false,
+                animation: "slide_from_bottom",
+              }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </AuthProvider>
+      </TamaguiProvider>
+    </KeyboardProvider>
   );
 }

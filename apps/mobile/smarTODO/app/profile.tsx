@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Alert, ScrollView, ActivityIndicator } from "react-native";
 import { YStack, XStack } from "@tamagui/stacks";
 import { H3 } from "@tamagui/text";
@@ -18,7 +18,6 @@ import {
   Calendar,
 } from "@tamagui/lucide-icons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
 import AppLayout from "../components/AppLayout";
 
 export default function ProfileScreen() {
@@ -26,31 +25,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      loadProfile();
-
-      // Subscribe to real-time profile updates
-      const unsubscribe = profileService.subscribeToProfileUpdates(
-        user.id,
-        (updatedProfile) => {
-          setProfile(updatedProfile);
-        },
-      );
-
-      return unsubscribe;
-    }
-  }, [user]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (user) {
-        loadProfile();
-      }
-    }, [user]),
-  );
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -71,7 +46,31 @@ export default function ProfileScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+
+      // Subscribe to real-time profile updates
+      const unsubscribe = profileService.subscribeToProfileUpdates(
+        user.id,
+        (updatedProfile) => {
+          setProfile(updatedProfile);
+        },
+      );
+
+      return unsubscribe;
+    }
+  }, [user, loadProfile]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        loadProfile();
+      }
+    }, [user, loadProfile]),
+  );
 
   if (loading) {
     return (

@@ -1,26 +1,23 @@
-import { useState, useEffect } from "react";
-import {
-  Alert,
-  ScrollView,
-  ActivityIndicator,
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native";
-import { YStack } from "@tamagui/stacks";
+import { useState, useEffect, useCallback } from "react";
+import { Alert, ActivityIndicator, Platform, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { YStack, XStack } from "@tamagui/stacks";
 import { Text } from "@tamagui/core";
+import { H3 } from "@tamagui/text";
 import { Input } from "@tamagui/input";
 import { Button } from "@tamagui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@tamagui/avatar";
 import { Separator } from "@tamagui/separator";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../contexts/AuthContext";
 import { User, X, Check, Camera } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { handleInputChange } from "../lib/input-utils";
-import AppLayout from "../components/AppLayout";
 import { profileService } from "../lib/services/profile.service";
 import * as ImagePicker from "expo-image-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
-export default function ProfileEditModal() {
+export default function ProfileEditScreen() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -30,16 +27,7 @@ export default function ProfileEditModal() {
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
 
-  useEffect(() => {
-    if (user) {
-      loadProfile();
-    } else {
-      console.log("No user found in profileEdit");
-      setLoading(false);
-    }
-  }, [user]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -65,7 +53,16 @@ export default function ProfileEditModal() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+    } else {
+      console.log("No user found in profileEdit");
+      setLoading(false);
+    }
+  }, [user, loadProfile]);
 
   const saveProfile = async () => {
     try {
@@ -174,66 +171,116 @@ export default function ProfileEditModal() {
 
   if (loading) {
     return (
-      <AppLayout showHeader={false}>
-        <YStack
-          flex={1}
-          justifyContent="center"
-          alignItems="center"
-          backgroundColor="$background"
-        >
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text marginTop="$4">Loading profile...</Text>
-        </YStack>
-      </AppLayout>
+      <>
+        <View
+          style={{
+            backgroundColor: "#E64D13",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 50,
+          }}
+        />
+        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+          <StatusBar style="light" />
+          <YStack
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
+            backgroundColor="$background"
+          >
+            <ActivityIndicator size="large" color="#007AFF" />
+            <Text marginTop="$4">Loading profile...</Text>
+          </YStack>
+        </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <AppLayout
-      title="Edit Profile"
-      headerLeft={
-        <Button
-          unstyled
-          onPress={() => router.back()}
-          backgroundColor="transparent"
-          hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-          pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-          padding="$2"
-          height="100%"
+    <>
+      <View
+        style={{
+          backgroundColor: "#E64D13",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 50,
+        }}
+      />
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+        <StatusBar style="light" />
+        {/* Header */}
+        <XStack
+          paddingHorizontal="$3"
+          paddingVertical="$3"
+          backgroundColor="$primary"
+          borderBottomWidth={1}
+          borderBottomColor="$primaryDark"
           alignItems="center"
-          justifyContent="center"
+          justifyContent="space-between"
+          height={60}
         >
-          <X size={24} color="white" />
-        </Button>
-      }
-      headerRight={
-        <Button
-          unstyled
-          onPress={saveProfile}
-          disabled={saving}
-          backgroundColor="transparent"
-          hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-          pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-          padding="$2"
-          height="100%"
-          alignItems="center"
-          justifyContent="center"
+          <XStack alignItems="center" flex={1}>
+            <Button
+              unstyled
+              onPress={() => router.back()}
+              backgroundColor="transparent"
+              hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+              pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              padding="$2"
+              height="100%"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <X size={24} color="white" />
+            </Button>
+            <H3
+              color="white"
+              fontSize="$5"
+              fontFamily="$heading"
+              fontWeight="bold"
+              marginLeft="$3"
+            >
+              Edit Profile
+            </H3>
+          </XStack>
+          <XStack alignItems="center" height="100%">
+            <Button
+              unstyled
+              onPress={saveProfile}
+              disabled={saving}
+              backgroundColor="transparent"
+              hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+              pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              padding="$2"
+              height="100%"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Check size={24} color="white" />
+              )}
+            </Button>
+          </XStack>
+        </XStack>
+        <KeyboardAwareScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: 16,
+            paddingBottom: 24,
+          }}
+          bottomOffset={64} // tune 40–100 based on design
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
         >
-          {saving ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Check size={24} color="white" />
-          )}
-        </Button>
-      }
-      hideMenu
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <YStack padding="$4" gap="$4">
+          <YStack flex={1} gap="$4">
             {/* Avatar Section */}
             <YStack alignItems="center" gap="$3" paddingVertical="$4">
               <YStack position="relative">
@@ -250,6 +297,7 @@ export default function ProfileEditModal() {
                 </Avatar>
                 {uploadingAvatar && (
                   <YStack
+                    pointerEvents="none"
                     position="absolute"
                     top={0}
                     left={0}
@@ -289,6 +337,7 @@ export default function ProfileEditModal() {
                   onChangeText={(text) => handleInputChange(setFullName, text)}
                   placeholder="Enter your full name"
                   autoCapitalize="words"
+                  returnKeyType="next"
                 />
               </YStack>
 
@@ -302,6 +351,7 @@ export default function ProfileEditModal() {
                   onChangeText={(text) => handleInputChange(setUsername, text)}
                   placeholder="Choose a username"
                   autoCapitalize="none"
+                  returnKeyType="next"
                 />
               </YStack>
 
@@ -318,6 +368,7 @@ export default function ProfileEditModal() {
                   numberOfLines={4}
                   textAlignVertical="top"
                   height={100}
+                  returnKeyType="done"
                 />
               </YStack>
 
@@ -337,8 +388,8 @@ export default function ProfileEditModal() {
               </YStack>
             </YStack>
           </YStack>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </AppLayout>
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
+    </>
   );
 }
