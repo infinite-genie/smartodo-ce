@@ -1,16 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { Alert, ActivityIndicator, Platform, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { YStack, XStack } from "@tamagui/stacks";
+import { Alert, ActivityIndicator, Platform } from "react-native";
+import { YStack } from "@tamagui/stacks";
 import { Text } from "@tamagui/core";
-import { H3 } from "@tamagui/text";
 import { Input } from "@tamagui/input";
 import { Button } from "@tamagui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@tamagui/avatar";
 import { Separator } from "@tamagui/separator";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../contexts/AuthContext";
-import { User, X, Check, Camera } from "@tamagui/lucide-icons";
+import { User, Camera } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { handleInputChange } from "../lib/input-utils";
 import { profileService } from "../lib/services/profile.service";
@@ -197,225 +194,157 @@ export default function ProfileEditScreen() {
 
   if (loading) {
     return (
-      <>
-        <View
-          style={{
-            backgroundColor: "#E64D13",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 50,
-          }}
-        />
-        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-          <StatusBar style="light" />
-          <YStack
-            flex={1}
-            justifyContent="center"
-            alignItems="center"
-            backgroundColor="$background"
-          >
-            <ActivityIndicator size="large" color="#007AFF" />
-            <Text marginTop="$4">Loading profile...</Text>
-          </YStack>
-        </SafeAreaView>
-      </>
+      <YStack
+        flex={1}
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="$background"
+      >
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text marginTop="$4">Loading profile...</Text>
+      </YStack>
     );
   }
 
   return (
-    <>
-      <View
-        style={{
-          backgroundColor: "#E64D13",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 50,
-        }}
-      />
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-        <StatusBar style="light" />
-        {/* Header */}
-        <XStack
-          paddingHorizontal="$3"
-          paddingVertical="$3"
-          backgroundColor="$primary"
-          borderBottomWidth={1}
-          borderBottomColor="$primaryDark"
-          alignItems="center"
-          justifyContent="space-between"
-          height={60}
-        >
-          <XStack alignItems="center" flex={1}>
-            <Button
-              unstyled
-              onPress={() => router.back()}
-              backgroundColor="transparent"
-              hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-              pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-              padding="$2"
-              height="100%"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <X size={24} color="white" />
-            </Button>
-            <H3
-              color="white"
-              fontSize="$5"
-              fontFamily="$heading"
-              fontWeight="bold"
-              marginLeft="$3"
-            >
-              Edit Profile
-            </H3>
-          </XStack>
-          <XStack alignItems="center" height="100%">
-            <Button
-              unstyled
-              onPress={saveProfile}
-              disabled={saving}
-              backgroundColor="transparent"
-              hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-              pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-              padding="$2"
-              height="100%"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {saving ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Check size={24} color="white" />
-              )}
-            </Button>
-          </XStack>
-        </XStack>
-        <KeyboardAwareScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: 16,
-            paddingBottom: 24,
-          }}
-          bottomOffset={64} // tune 40–100 based on design
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
-          <YStack flex={1} gap="$4">
-            {/* Avatar Section */}
-            <YStack alignItems="center" gap="$3" paddingVertical="$4">
-              <YStack position="relative">
-                <Avatar circular size="$10">
-                  <AvatarImage
-                    source={{
-                      uri:
-                        avatarUrl || "https://avatar.iran.liara.run/public/13",
-                    }}
-                  />
-                  <AvatarFallback backgroundColor="$blue5">
-                    <User size="$4" />
-                  </AvatarFallback>
-                </Avatar>
-                {uploadingAvatar && (
-                  <YStack
-                    pointerEvents="none"
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor="rgba(0,0,0,0.5)"
-                    borderRadius="$10"
-                  >
-                    <ActivityIndicator size="small" color="white" />
-                  </YStack>
-                )}
-              </YStack>
-              <Button
-                size="$3"
-                variant="outlined"
-                onPress={showImagePickerOptions}
-                disabled={uploadingAvatar}
-                icon={Camera}
+    <KeyboardAwareScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 16,
+        paddingBottom: 24,
+      }}
+      bottomOffset={64} // tune 40–100 based on design
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+    >
+      <YStack flex={1} gap="$4">
+        {/* Avatar Section */}
+        <YStack alignItems="center" gap="$3" paddingVertical="$4">
+          <YStack position="relative">
+            <Avatar circular size="$10">
+              <AvatarImage
+                source={{
+                  uri: avatarUrl || "https://avatar.iran.liara.run/public/13",
+                }}
+              />
+              <AvatarFallback backgroundColor="$blue5">
+                <User size="$4" />
+              </AvatarFallback>
+            </Avatar>
+            {uploadingAvatar && (
+              <YStack
+                pointerEvents="none"
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                bottom={0}
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor="rgba(0,0,0,0.5)"
+                borderRadius="$10"
               >
-                Change Photo
-              </Button>
-            </YStack>
-
-            <Separator />
-
-            {/* Form Fields */}
-            <YStack gap="$4">
-              <YStack gap="$2">
-                <Text fontSize="$3" fontWeight="600">
-                  Full Name
-                </Text>
-                <Input
-                  size="$4"
-                  value={fullName}
-                  onChangeText={(text) => handleInputChange(setFullName, text)}
-                  placeholder="Enter your full name"
-                  autoCapitalize="words"
-                  returnKeyType="next"
-                />
+                <ActivityIndicator size="small" color="white" />
               </YStack>
-
-              <YStack gap="$2">
-                <Text fontSize="$3" fontWeight="600">
-                  Username
-                </Text>
-                <Input
-                  size="$4"
-                  value={username}
-                  onChangeText={(text) => handleInputChange(setUsername, text)}
-                  placeholder="Choose a username"
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                />
-              </YStack>
-
-              <YStack gap="$2">
-                <Text fontSize="$3" fontWeight="600">
-                  Bio
-                </Text>
-                <Input
-                  size="$4"
-                  value={bio}
-                  onChangeText={(text) => handleInputChange(setBio, text)}
-                  placeholder="Tell us about yourself"
-                  multiline={true}
-                  numberOfLines={4}
-                  textAlignVertical="top"
-                  height={100}
-                  returnKeyType="done"
-                />
-              </YStack>
-
-              <YStack gap="$2">
-                <Text fontSize="$3" fontWeight="600">
-                  Email
-                </Text>
-                <Input
-                  size="$4"
-                  value={user?.email || ""}
-                  editable={false}
-                  opacity={0.6}
-                />
-                <Text fontSize="$1" color="$gray10">
-                  Email cannot be changed
-                </Text>
-              </YStack>
-            </YStack>
+            )}
           </YStack>
-        </KeyboardAwareScrollView>
-      </SafeAreaView>
-    </>
+          <Button
+            size="$3"
+            variant="outlined"
+            onPress={showImagePickerOptions}
+            disabled={uploadingAvatar}
+            icon={Camera}
+          >
+            Change Photo
+          </Button>
+        </YStack>
+
+        <Separator />
+
+        {/* Form Fields */}
+        <YStack gap="$4">
+          <YStack gap="$2">
+            <Text fontSize="$3" fontWeight="600">
+              Full Name
+            </Text>
+            <Input
+              size="$4"
+              value={fullName}
+              onChangeText={(text) => handleInputChange(setFullName, text)}
+              placeholder="Enter your full name"
+              autoCapitalize="words"
+              returnKeyType="next"
+            />
+          </YStack>
+
+          <YStack gap="$2">
+            <Text fontSize="$3" fontWeight="600">
+              Username
+            </Text>
+            <Input
+              size="$4"
+              value={username}
+              onChangeText={(text) => handleInputChange(setUsername, text)}
+              placeholder="Choose a username"
+              autoCapitalize="none"
+              returnKeyType="next"
+            />
+          </YStack>
+
+          <YStack gap="$2">
+            <Text fontSize="$3" fontWeight="600">
+              Bio
+            </Text>
+            <Input
+              size="$4"
+              value={bio}
+              onChangeText={(text) => handleInputChange(setBio, text)}
+              placeholder="Tell us about yourself"
+              multiline={true}
+              numberOfLines={4}
+              textAlignVertical="top"
+              height={100}
+              returnKeyType="done"
+            />
+          </YStack>
+
+          <YStack gap="$2">
+            <Text fontSize="$3" fontWeight="600">
+              Email
+            </Text>
+            <Input
+              size="$4"
+              value={user?.email || ""}
+              editable={false}
+              opacity={0.6}
+            />
+            <Text fontSize="$1" color="$gray10">
+              Email cannot be changed
+            </Text>
+          </YStack>
+
+          {/* Save Button */}
+          <Button
+            size="$5"
+            backgroundColor="$primary"
+            color="white"
+            fontFamily="$heading"
+            fontSize="$5"
+            pressStyle={{
+              scale: 0.98,
+              opacity: 0.9,
+            }}
+            animation="quick"
+            onPress={saveProfile}
+            disabled={saving}
+            marginTop="$4"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
+        </YStack>
+      </YStack>
+    </KeyboardAwareScrollView>
   );
 }

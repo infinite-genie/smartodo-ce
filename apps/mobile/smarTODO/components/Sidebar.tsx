@@ -50,7 +50,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       translateX.value = withTiming(-280, { duration: 300 });
       opacity.value = withTiming(0, { duration: 300 });
     }
-  }, [isOpen]);
+  }, [isOpen, translateX, opacity]);
 
   useEffect(() => {
     const fetchProfile = async () => {
