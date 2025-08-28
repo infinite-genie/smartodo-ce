@@ -102,27 +102,40 @@ export default function ProfileEditScreen() {
 
     // Launch image picker
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
       base64: true,
     });
 
-    if (!result.canceled && result.assets[0].base64) {
-      try {
-        setUploadingAvatar(true);
-        const newAvatarUrl = await profileService.uploadAvatar(
-          result.assets[0].base64,
-        );
-        setAvatarUrl(newAvatarUrl);
-        Alert.alert("Success", "Avatar updated successfully");
-      } catch (error) {
-        console.error("Error uploading avatar:", error);
-        Alert.alert("Error", "Failed to upload avatar");
-      } finally {
-        setUploadingAvatar(false);
-      }
+    if (result.canceled) {
+      return;
+    }
+
+    // Verify assets array and base64 data exist
+    if (!result.assets || result.assets.length === 0) {
+      Alert.alert("Error", "No image was selected");
+      return;
+    }
+
+    if (!result.assets[0].base64) {
+      Alert.alert("Error", "Failed to process image data");
+      return;
+    }
+
+    try {
+      setUploadingAvatar(true);
+      const newAvatarUrl = await profileService.uploadAvatar(
+        result.assets[0].base64,
+      );
+      setAvatarUrl(newAvatarUrl);
+      Alert.alert("Success", "Avatar updated successfully");
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      Alert.alert("Error", "Failed to upload avatar");
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -144,20 +157,33 @@ export default function ProfileEditScreen() {
       base64: true,
     });
 
-    if (!result.canceled && result.assets[0].base64) {
-      try {
-        setUploadingAvatar(true);
-        const newAvatarUrl = await profileService.uploadAvatar(
-          result.assets[0].base64,
-        );
-        setAvatarUrl(newAvatarUrl);
-        Alert.alert("Success", "Avatar updated successfully");
-      } catch (error) {
-        console.error("Error uploading avatar:", error);
-        Alert.alert("Error", "Failed to upload avatar");
-      } finally {
-        setUploadingAvatar(false);
-      }
+    if (result.canceled) {
+      return;
+    }
+
+    // Verify assets array and base64 data exist
+    if (!result.assets || result.assets.length === 0) {
+      Alert.alert("Error", "No photo was taken");
+      return;
+    }
+
+    if (!result.assets[0].base64) {
+      Alert.alert("Error", "Failed to process photo data");
+      return;
+    }
+
+    try {
+      setUploadingAvatar(true);
+      const newAvatarUrl = await profileService.uploadAvatar(
+        result.assets[0].base64,
+      );
+      setAvatarUrl(newAvatarUrl);
+      Alert.alert("Success", "Avatar updated successfully");
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      Alert.alert("Error", "Failed to upload avatar");
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 

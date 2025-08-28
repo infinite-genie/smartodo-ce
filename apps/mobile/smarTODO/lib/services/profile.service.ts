@@ -21,7 +21,7 @@ export interface ProfileUpdateData {
 }
 
 class ProfileService {
-  private realtimeChannel: RealtimeChannel | null = null;
+  private realtimeChannels: Map<string, RealtimeChannel> = new Map();
   async getProfile(userId: string): Promise<Profile | null> {
     const { data, error } = await supabase
       .from("profiles")
@@ -91,8 +91,28 @@ class ProfileService {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("No user logged in");
 
-    // Generate unique filename
-    const fileExt = "jpg";
+    // Extract MIME type and validate
+    const mimeMatch = base64Image.match(/^data:(image\/[^;]+);base64,/);
+    const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+
+    // Map MIME types to file extensions (only allow safe types)
+    const mimeToExt: { [key: string]: string } = {
+      "image/jpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    };
+
+    // Validate and get extension
+    const fileExt = mimeToExt[mimeType];
+    if (!fileExt) {
+      throw new Error(
+        "Invalid image format. Allowed formats: JPEG, PNG, WebP, GIF",
+      );
+    }
+
+    // Generate unique filename with proper extension
     const fileName = `${user.id}-${Date.now()}.${fileExt}`;
     const filePath = `${user.id}/${fileName}`;
 
@@ -100,24 +120,26 @@ class ProfileService {
     const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
     const arrayBuffer = decode(base64Data);
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage with dynamic content type
     const { error: uploadError } = await supabase.storage
       .from("avatars")
       .upload(filePath, arrayBuffer, {
-        contentType: "image/jpeg",
+        contentType: mimeType,
         upsert: true,
       });
-
     if (uploadError) throw uploadError;
-
     // Get public URL
     const {
       data: { publicUrl },
     } = supabase.storage.from("avatars").getPublicUrl(filePath);
-
     // Update profile with new avatar URL
-    await this.upsertUserProfile({ avatar_url: publicUrl });
-
+    try {
+      await this.upsertUserProfile({ avatar_url: publicUrl });
+    } catch (error) {
+      // Clean up uploaded file if profile update fails
+      await supabase.storage.from("avatars").remove([filePath]);
+      throw error;
+    }
     return publicUrl;
   }
 
@@ -130,24 +152,53 @@ class ProfileService {
     const profile = await this.getCurrentUserProfile();
     if (!profile?.avatar_url) return;
 
-    // Extract file path from URL
-    const urlParts = profile.avatar_url.split("/");
-    const filePath = urlParts.slice(-2).join("/");
+    // Extract file path from URL using URL parsing
+    let filePath: string;
+    try {
+      const url = new URL(profile.avatar_url);
+      const pathname = url.pathname;
+      const pathSegments = pathname.split("/").filter((segment) => segment);
+
+      // Take the last two segments (user_id/filename)
+      if (pathSegments.length >= 2) {
+        filePath = pathSegments.slice(-2).join("/");
+      } else {
+        throw new Error("Invalid avatar URL format");
+      }
+    } catch (error) {
+      console.error("Failed to parse avatar URL:", error);
+      throw new Error("Invalid avatar URL format");
+    }
 
     // Delete from storage
     const { error } = await supabase.storage.from("avatars").remove([filePath]);
 
     if (error) throw error;
 
-    // Update profile to remove avatar URL
-    await this.upsertUserProfile({ avatar_url: undefined });
+    // Update profile to explicitly set avatar URL to null
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: null })
+      .eq("user_id", user.id)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
   }
 
   subscribeToProfileUpdates(
     userId: string,
     callback: (profile: Profile) => void,
   ): () => void {
-    this.realtimeChannel = supabase
+    // Remove any existing channel for this userId
+    const existingChannel = this.realtimeChannels.get(userId);
+    if (existingChannel) {
+      supabase.removeChannel(existingChannel);
+      this.realtimeChannels.delete(userId);
+    }
+
+    // Create new channel for this userId
+    const channel = supabase
       .channel(`profile:${userId}`)
       .on(
         "postgres_changes",
@@ -165,19 +216,33 @@ class ProfileService {
       )
       .subscribe();
 
+    // Store channel reference
+    this.realtimeChannels.set(userId, channel);
+
     // Return unsubscribe function
     return () => {
-      if (this.realtimeChannel) {
-        supabase.removeChannel(this.realtimeChannel);
-        this.realtimeChannel = null;
+      const channelToRemove = this.realtimeChannels.get(userId);
+      if (channelToRemove) {
+        supabase.removeChannel(channelToRemove);
+        this.realtimeChannels.delete(userId);
       }
     };
   }
 
-  unsubscribeFromProfileUpdates(): void {
-    if (this.realtimeChannel) {
-      supabase.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
+  unsubscribeFromProfileUpdates(userId?: string): void {
+    if (userId) {
+      // Unsubscribe specific user
+      const channel = this.realtimeChannels.get(userId);
+      if (channel) {
+        supabase.removeChannel(channel);
+        this.realtimeChannels.delete(userId);
+      }
+    } else {
+      // Unsubscribe all
+      this.realtimeChannels.forEach((channel) => {
+        supabase.removeChannel(channel);
+      });
+      this.realtimeChannels.clear();
     }
   }
 }
