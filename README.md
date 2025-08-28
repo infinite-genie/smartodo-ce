@@ -83,7 +83,7 @@ smartodo-ce/
    supabase start
 
    # Apply database migrations
-   supabase db reset
+   supabase db push
    ```
 
 4. **Configure environment variables**

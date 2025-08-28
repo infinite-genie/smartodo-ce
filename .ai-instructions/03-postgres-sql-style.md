@@ -18,16 +18,16 @@
 ## Tables
 
 - Avoid prefixes like `tbl_` and ensure no table name matches any of its column names
-- Always add an `id` column of type `uuid default gen_random_uuid() primary key` for new tables
-- For tables that reference auth.users directly (like profiles), use `uuid references auth.users on delete cascade primary key`
+- Always add a primary key column named `id` of type `uuid default gen_random_uuid() primary key` for new tables
+- For tables that directly reference auth.users (like profiles), use `id uuid references auth.users on delete cascade primary key`
 - Create all tables in the `public` schema unless otherwise specified
 - Always add the schema to SQL queries for clarity
 - Always add a comment to describe what the table does (up to 1024 characters)
 
 ## Columns
 
-- Use singular names and avoid generic names like `id`
-- For references to foreign tables, use the singular of the table name with the `_id` suffix (e.g., `user_id` to reference the `users` table)
+- Use singular names and avoid generic names like `id` (except for primary key columns, which must be named `id`)
+- For references to foreign tables, use descriptive names with the `_id` suffix (e.g., `user_id` to reference the `users` table, `profile_id` to reference the `profiles` table)
 - Always use lowercase except in cases involving acronyms or when readability would be enhanced by an exception
 
 ### Examples
