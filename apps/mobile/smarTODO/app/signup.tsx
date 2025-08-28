@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "@tamagui/core";
 import { YStack, XStack } from "@tamagui/stacks";
@@ -14,6 +9,7 @@ import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { Link, router } from "expo-router";
 import { handleInputChange } from "../lib/input-utils";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -152,182 +148,179 @@ export default function SignupScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      <KeyboardAwareScrollView
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "android" ? -100 : 0}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        bottomOffset={32}
+        extraKeyboardSpace={8}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
-          showsVerticalScrollIndicator={false}
+        <YStack
+          flex={1}
+          padding="$6"
+          justifyContent="center"
+          backgroundColor="$background"
         >
-          <YStack
-            flex={1}
-            padding="$6"
-            justifyContent="center"
-            backgroundColor="$background"
-          >
-            <YStack gap="$6" alignItems="center">
-              <YStack gap="$2" alignItems="center">
-                <H1
-                  color="$primary"
-                  fontSize="$10"
-                  fontFamily="$heading"
-                  textAlign="center"
-                >
-                  Join the Waitlist
-                </H1>
-                <Text
-                  color="$gray11"
-                  fontSize="$4"
-                  fontFamily="$body"
-                  textAlign="center"
-                  paddingHorizontal="$4"
-                >
-                  Be among the first to experience the future of task management
+          <YStack gap="$6" alignItems="center">
+            <YStack gap="$2" alignItems="center">
+              <H1
+                color="$primary"
+                fontSize="$10"
+                fontFamily="$heading"
+                textAlign="center"
+              >
+                Join the Waitlist
+              </H1>
+              <Text
+                color="$gray11"
+                fontSize="$4"
+                fontFamily="$body"
+                textAlign="center"
+                paddingHorizontal="$4"
+              >
+                Be among the first to experience the future of task management
+              </Text>
+            </YStack>
+
+            <YStack gap="$4" width="100%" maxWidth={400}>
+              <YStack gap="$2">
+                <Text color="$gray12" fontSize="$3" fontFamily="$body">
+                  Full Name
                 </Text>
+                <Input
+                  size="$5"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChangeText={(e) => handleInputChange(setFullName, e)}
+                  autoCapitalize="words"
+                  backgroundColor="$gray2"
+                  borderWidth={1}
+                  borderColor="$gray6"
+                  focusStyle={{
+                    borderColor: "$primary",
+                    borderWidth: 2,
+                  }}
+                />
               </YStack>
 
-              <YStack gap="$4" width="100%" maxWidth={400}>
-                <YStack gap="$2">
-                  <Text color="$gray12" fontSize="$3" fontFamily="$body">
-                    Full Name
+              <YStack gap="$2">
+                <Text color="$gray12" fontSize="$3" fontFamily="$body">
+                  Email
+                </Text>
+                <Input
+                  size="$5"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={(e) => handleInputChange(setEmail, e)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  backgroundColor="$gray2"
+                  borderWidth={1}
+                  borderColor="$gray6"
+                  focusStyle={{
+                    borderColor: "$primary",
+                    borderWidth: 2,
+                  }}
+                />
+              </YStack>
+
+              <YStack gap="$4" marginTop="$2">
+                <View
+                  backgroundColor="$blue2"
+                  padding="$3"
+                  borderRadius="$3"
+                  borderWidth={1}
+                  borderColor="$blue6"
+                >
+                  <Text
+                    color="$blue11"
+                    fontSize="$3"
+                    fontFamily="$body"
+                    textAlign="center"
+                  >
+                    🎯 Early access to all features
                   </Text>
-                  <Input
-                    size="$5"
-                    placeholder="Enter your full name"
-                    value={fullName}
-                    onChangeText={(e) => handleInputChange(setFullName, e)}
-                    autoCapitalize="words"
-                    backgroundColor="$gray2"
-                    borderWidth={1}
-                    borderColor="$gray6"
-                    focusStyle={{
-                      borderColor: "$primary",
-                      borderWidth: 2,
-                    }}
-                  />
-                </YStack>
+                </View>
 
-                <YStack gap="$2">
-                  <Text color="$gray12" fontSize="$3" fontFamily="$body">
-                    Email
+                <View
+                  backgroundColor="$green2"
+                  padding="$3"
+                  borderRadius="$3"
+                  borderWidth={1}
+                  borderColor="$green6"
+                >
+                  <Text
+                    color="$green11"
+                    fontSize="$3"
+                    fontFamily="$body"
+                    textAlign="center"
+                  >
+                    🤖 Priority access to DORA AI Assistant
                   </Text>
-                  <Input
-                    size="$5"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChangeText={(e) => handleInputChange(setEmail, e)}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    backgroundColor="$gray2"
-                    borderWidth={1}
-                    borderColor="$gray6"
-                    focusStyle={{
-                      borderColor: "$primary",
-                      borderWidth: 2,
-                    }}
-                  />
-                </YStack>
+                </View>
 
-                <YStack gap="$4" marginTop="$2">
-                  <View
-                    backgroundColor="$blue2"
-                    padding="$3"
-                    borderRadius="$3"
-                    borderWidth={1}
-                    borderColor="$blue6"
+                <View
+                  backgroundColor="$purple2"
+                  padding="$3"
+                  borderRadius="$3"
+                  borderWidth={1}
+                  borderColor="$purple6"
+                >
+                  <Text
+                    color="$purple11"
+                    fontSize="$3"
+                    fontFamily="$body"
+                    textAlign="center"
                   >
-                    <Text
-                      color="$blue11"
-                      fontSize="$3"
+                    🎁 Special launch pricing
+                  </Text>
+                </View>
+              </YStack>
+
+              <YStack gap="$3" marginTop="$4">
+                <Button
+                  size="$5"
+                  backgroundColor="$primary"
+                  color="white"
+                  fontFamily="$heading"
+                  fontSize="$5"
+                  pressStyle={{
+                    scale: 0.98,
+                    opacity: 0.9,
+                  }}
+                  animation="quick"
+                  onPress={handleWaitlistSignup}
+                  disabled={loading}
+                >
+                  {loading ? "Submitting..." : "Join Waitlist"}
+                </Button>
+
+                <XStack gap="$2" justifyContent="center" alignItems="center">
+                  <Text color="$gray11" fontSize="$3" fontFamily="$body">
+                    Already have access?
+                  </Text>
+                  <Link href="/login" asChild>
+                    <Button
+                      size="$2"
+                      variant="outlined"
+                      backgroundColor="transparent"
+                      borderWidth={0}
+                      color="$primary"
                       fontFamily="$body"
-                      textAlign="center"
-                    >
-                      🎯 Early access to all features
-                    </Text>
-                  </View>
-
-                  <View
-                    backgroundColor="$green2"
-                    padding="$3"
-                    borderRadius="$3"
-                    borderWidth={1}
-                    borderColor="$green6"
-                  >
-                    <Text
-                      color="$green11"
                       fontSize="$3"
-                      fontFamily="$body"
-                      textAlign="center"
+                      disabled={loading}
                     >
-                      🤖 Priority access to DORA AI Assistant
-                    </Text>
-                  </View>
-
-                  <View
-                    backgroundColor="$purple2"
-                    padding="$3"
-                    borderRadius="$3"
-                    borderWidth={1}
-                    borderColor="$purple6"
-                  >
-                    <Text
-                      color="$purple11"
-                      fontSize="$3"
-                      fontFamily="$body"
-                      textAlign="center"
-                    >
-                      🎁 Special launch pricing
-                    </Text>
-                  </View>
-                </YStack>
-
-                <YStack gap="$3" marginTop="$4">
-                  <Button
-                    size="$5"
-                    backgroundColor="$primary"
-                    color="white"
-                    fontFamily="$heading"
-                    fontSize="$5"
-                    pressStyle={{
-                      scale: 0.98,
-                      opacity: 0.9,
-                    }}
-                    animation="quick"
-                    onPress={handleWaitlistSignup}
-                    disabled={loading}
-                  >
-                    {loading ? "Submitting..." : "Join Waitlist"}
-                  </Button>
-
-                  <XStack gap="$2" justifyContent="center" alignItems="center">
-                    <Text color="$gray11" fontSize="$3" fontFamily="$body">
-                      Already have access?
-                    </Text>
-                    <Link href="/login" asChild>
-                      <Button
-                        size="$2"
-                        variant="outlined"
-                        backgroundColor="transparent"
-                        borderWidth={0}
-                        color="$primary"
-                        fontFamily="$body"
-                        fontSize="$3"
-                        disabled={loading}
-                      >
-                        Login
-                      </Button>
-                    </Link>
-                  </XStack>
-                </YStack>
+                      Login
+                    </Button>
+                  </Link>
+                </XStack>
               </YStack>
             </YStack>
           </YStack>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </YStack>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

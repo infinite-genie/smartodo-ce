@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@tamagui/core";
 import { YStack, XStack } from "@tamagui/stacks";
@@ -16,6 +11,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { handleInputChange } from "../lib/input-utils";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function UpdatePasswordScreen() {
   const [newPassword, setNewPassword] = useState("");
@@ -139,155 +135,147 @@ export default function UpdatePasswordScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      <KeyboardAwareScrollView
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "android" ? -100 : 0}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        bottomOffset={64}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-        >
-          <YStack flex={1} padding="$6" backgroundColor="$background">
-            <XStack marginBottom="$4" alignItems="center">
-              <Button
-                size="$3"
-                circular
-                backgroundColor="transparent"
-                onPress={() => router.replace("/login")}
-                color="$gray12"
-                pressStyle={{
-                  scale: 0.95,
-                  opacity: 0.8,
-                }}
-                animation="quick"
-              >
-                <Ionicons name="chevron-back" size={24} color="#666" />
-              </Button>
-            </XStack>
+        <YStack flex={1} padding="$6" backgroundColor="$background">
+          <XStack marginBottom="$4" alignItems="center">
+            <Button
+              size="$3"
+              circular
+              backgroundColor="transparent"
+              onPress={() => router.replace("/login")}
+              color="$gray12"
+              pressStyle={{
+                scale: 0.95,
+                opacity: 0.8,
+              }}
+              animation="quick"
+            >
+              <Ionicons name="chevron-back" size={24} color="#666" />
+            </Button>
+          </XStack>
 
-            <YStack flex={1} justifyContent="center">
-              <YStack gap="$6" alignItems="center">
-                <YStack gap="$2" alignItems="center">
-                  <H1
-                    color="$primary"
-                    fontSize="$9"
-                    fontFamily="$heading"
-                    textAlign="center"
-                  >
-                    Set New Password
-                  </H1>
-                  <Text
-                    color="$gray11"
-                    fontSize="$4"
-                    fontFamily="$body"
-                    textAlign="center"
-                    paddingHorizontal="$4"
-                  >
-                    Enter your new password below
+          <YStack flex={1} justifyContent="center">
+            <YStack gap="$6" alignItems="center">
+              <YStack gap="$2" alignItems="center">
+                <H1
+                  color="$primary"
+                  fontSize="$9"
+                  fontFamily="$heading"
+                  textAlign="center"
+                >
+                  Set New Password
+                </H1>
+                <Text
+                  color="$gray11"
+                  fontSize="$4"
+                  fontFamily="$body"
+                  textAlign="center"
+                  paddingHorizontal="$4"
+                >
+                  Enter your new password below
+                </Text>
+              </YStack>
+
+              <YStack gap="$4" width="100%" maxWidth={400}>
+                <YStack gap="$2">
+                  <Text color="$gray12" fontSize="$3" fontFamily="$body">
+                    New Password
+                  </Text>
+                  <Input
+                    size="$5"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChangeText={(e) => handleInputChange(setNewPassword, e)}
+                    type="password"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    autoFocus
+                    backgroundColor="$gray2"
+                    borderWidth={1}
+                    borderColor="$gray6"
+                    focusStyle={{
+                      borderColor: "$primary",
+                      borderWidth: 2,
+                    }}
+                  />
+                  <Text color="$gray10" fontSize="$2" fontFamily="$body">
+                    Must be at least 6 characters
                   </Text>
                 </YStack>
 
-                <YStack gap="$4" width="100%" maxWidth={400}>
-                  <YStack gap="$2">
-                    <Text color="$gray12" fontSize="$3" fontFamily="$body">
-                      New Password
-                    </Text>
-                    <Input
-                      size="$5"
-                      placeholder="Enter new password"
-                      value={newPassword}
-                      onChangeText={(e) => handleInputChange(setNewPassword, e)}
-                      type="password"
-                      secureTextEntry
-                      autoCapitalize="none"
-                      autoFocus
-                      backgroundColor="$gray2"
-                      borderWidth={1}
-                      borderColor="$gray6"
-                      focusStyle={{
-                        borderColor: "$primary",
-                        borderWidth: 2,
-                      }}
-                    />
-                    <Text color="$gray10" fontSize="$2" fontFamily="$body">
-                      Must be at least 6 characters
-                    </Text>
-                  </YStack>
+                <YStack gap="$2">
+                  <Text color="$gray12" fontSize="$3" fontFamily="$body">
+                    Confirm Password
+                  </Text>
+                  <Input
+                    size="$5"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChangeText={(e) =>
+                      handleInputChange(setConfirmPassword, e)
+                    }
+                    type="password"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    backgroundColor="$gray2"
+                    borderWidth={1}
+                    borderColor="$gray6"
+                    focusStyle={{
+                      borderColor: "$primary",
+                      borderWidth: 2,
+                    }}
+                  />
+                </YStack>
 
-                  <YStack gap="$2">
-                    <Text color="$gray12" fontSize="$3" fontFamily="$body">
-                      Confirm Password
-                    </Text>
-                    <Input
-                      size="$5"
-                      placeholder="Confirm new password"
-                      value={confirmPassword}
-                      onChangeText={(e) =>
-                        handleInputChange(setConfirmPassword, e)
-                      }
-                      type="password"
-                      secureTextEntry
-                      autoCapitalize="none"
-                      backgroundColor="$gray2"
-                      borderWidth={1}
-                      borderColor="$gray6"
-                      focusStyle={{
-                        borderColor: "$primary",
-                        borderWidth: 2,
-                      }}
-                    />
-                  </YStack>
+                <YStack gap="$3">
+                  <Button
+                    size="$5"
+                    backgroundColor="$primary"
+                    color="white"
+                    fontFamily="$heading"
+                    fontSize="$5"
+                    pressStyle={{
+                      scale: 0.98,
+                      opacity: 0.9,
+                    }}
+                    animation="quick"
+                    onPress={handleUpdatePassword}
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update Password"}
+                  </Button>
 
-                  <YStack gap="$3">
+                  <XStack gap="$2" justifyContent="center" alignItems="center">
+                    <Text color="$gray11" fontSize="$3" fontFamily="$body">
+                      Changed your mind?
+                    </Text>
                     <Button
-                      size="$5"
-                      backgroundColor="$primary"
-                      color="white"
-                      fontFamily="$heading"
-                      fontSize="$5"
-                      pressStyle={{
-                        scale: 0.98,
-                        opacity: 0.9,
-                      }}
-                      animation="quick"
-                      onPress={handleUpdatePassword}
+                      size="$2"
+                      variant="outlined"
+                      backgroundColor="transparent"
+                      borderWidth={0}
+                      color="$primary"
+                      fontFamily="$body"
+                      fontSize="$3"
                       disabled={loading}
+                      onPress={() => router.replace("/login")}
                     >
-                      {loading ? "Updating..." : "Update Password"}
+                      Back to Login
                     </Button>
-
-                    <XStack
-                      gap="$2"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <Text color="$gray11" fontSize="$3" fontFamily="$body">
-                        Changed your mind?
-                      </Text>
-                      <Button
-                        size="$2"
-                        variant="outlined"
-                        backgroundColor="transparent"
-                        borderWidth={0}
-                        color="$primary"
-                        fontFamily="$body"
-                        fontSize="$3"
-                        disabled={loading}
-                        onPress={() => router.replace("/login")}
-                      >
-                        Back to Login
-                      </Button>
-                    </XStack>
-                  </YStack>
+                  </XStack>
                 </YStack>
               </YStack>
             </YStack>
           </YStack>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </YStack>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
