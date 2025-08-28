@@ -1,7 +1,7 @@
 // Test business logic and helper functions for components
 
 describe("Component Logic Tests", () => {
-  describe("AppLayout Component Logic", () => {
+  describe("Layout Header Logic", () => {
     describe("Sidebar State Management", () => {
       it("should toggle sidebar state correctly", () => {
         let sidebarOpen = false;
@@ -87,17 +87,20 @@ describe("Component Logic Tests", () => {
       });
     });
 
-    describe("Component Props Validation", () => {
-      it("should validate AppLayout props interface", () => {
-        const validProps = {
-          children: "test content",
-          showHeader: true,
-          title: "Test Page",
+    describe("Header Configuration Validation", () => {
+      it("should validate header screen options", () => {
+        const headerStyle = {
+          backgroundColor: "#E64D13",
+        };
+        const headerTitleStyle = {
+          fontFamily: "VarelaRound",
+          fontSize: 18,
+          fontWeight: "bold",
         };
 
-        expect(typeof validProps.children).toBe("string");
-        expect(typeof validProps.showHeader).toBe("boolean");
-        expect(typeof validProps.title).toBe("string");
+        expect(headerStyle.backgroundColor).toBe("#E64D13");
+        expect(headerTitleStyle.fontFamily).toBe("VarelaRound");
+        expect(headerTitleStyle.fontSize).toBe(18);
       });
     });
   });
@@ -298,27 +301,27 @@ describe("Component Logic Tests", () => {
         const validProps = {
           isOpen: true,
           onClose: jest.fn(),
-          userEmail: "test@example.com",
         };
 
         expect(typeof validProps.isOpen).toBe("boolean");
         expect(typeof validProps.onClose).toBe("function");
-        expect(typeof validProps.userEmail).toBe("string");
       });
 
-      it("should handle optional userEmail prop", () => {
-        const propsWithoutEmail = {
+      it("should handle optional props", () => {
+        const minimalProps = {
           isOpen: false,
           onClose: jest.fn(),
         };
 
-        const propsWithEmail = {
-          ...propsWithoutEmail,
-          userEmail: "user@example.com",
+        const extendedProps = {
+          ...minimalProps,
+          isOpen: true,
         };
 
-        expect(propsWithoutEmail.userEmail).toBeUndefined();
-        expect(propsWithEmail.userEmail).toBe("user@example.com");
+        expect(minimalProps.isOpen).toBe(false);
+        expect(extendedProps.isOpen).toBe(true);
+        expect(typeof minimalProps.onClose).toBe("function");
+        expect(typeof extendedProps.onClose).toBe("function");
       });
 
       it("should validate onClose callback signature", () => {
