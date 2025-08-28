@@ -18,7 +18,8 @@
 ## Tables
 
 - Avoid prefixes like `tbl_` and ensure no table name matches any of its column names
-- Always add an `id` column of type `identity generated always` unless otherwise specified
+- Always add an `id` column of type `uuid default gen_random_uuid() primary key` for new tables
+- For tables that reference auth.users directly (like profiles), use `uuid references auth.users on delete cascade primary key`
 - Create all tables in the `public` schema unless otherwise specified
 - Always add the schema to SQL queries for clarity
 - Always add a comment to describe what the table does (up to 1024 characters)
@@ -33,11 +34,18 @@
 
 ```sql
 create table books (
-  id bigint generated always as identity primary key,
+  id uuid default gen_random_uuid() primary key,
   title text not null,
-  author_id bigint references authors (id)
+  author_id uuid references authors (id)
 );
 comment on table books is 'A list of all the books in the library.';
+
+-- example of user-linked table
+create table user_books (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  book_id uuid not null references books (id) on delete cascade
+);
 ```
 
 ## Queries

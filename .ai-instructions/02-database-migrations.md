@@ -34,6 +34,7 @@ Write Postgres-compatible SQL code for Supabase migration files that:
 - **Write all SQL in lowercase**
 - **Add copious comments** for any destructive SQL commands, including truncating, dropping, or column alterations
 - **When creating a new table**, you MUST enable Row Level Security (RLS) even if the table is intended for public access
+- **Always use UUID for primary keys** instead of serial/bigint IDs, using `uuid default gen_random_uuid() primary key`
 
 ## Row Level Security (RLS) Policies
 
@@ -69,6 +70,14 @@ create table public.profiles (
   created_at timestamptz default now() not null,
   updated_at timestamptz default now() not null
 );
+
+-- example of table with generated uuid primary key
+-- create table public.tasks (
+--   id uuid default gen_random_uuid() primary key,
+--   user_id uuid not null references auth.users (id) on delete cascade,
+--   title text not null,
+--   created_at timestamptz default now() not null
+-- );
 
 -- enable row level security
 alter table public.profiles enable row level security;
