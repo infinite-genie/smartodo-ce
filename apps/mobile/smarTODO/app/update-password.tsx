@@ -6,7 +6,6 @@ import { Button } from "@tamagui/button";
 import { Input } from "@tamagui/input";
 import { supabase } from "../lib/supabase";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { handleInputChange } from "../lib/input-utils";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -135,23 +134,6 @@ export default function UpdatePasswordScreen() {
       bottomOffset={64}
     >
       <YStack flex={1} padding="$6" backgroundColor="$background">
-        <XStack marginBottom="$4" alignItems="center">
-          <Button
-            size="$3"
-            circular
-            backgroundColor="transparent"
-            onPress={() => router.replace("/login")}
-            color="$gray12"
-            pressStyle={{
-              scale: 0.95,
-              opacity: 0.8,
-            }}
-            animation="quick"
-          >
-            <Ionicons name="chevron-back" size={24} color="#666" />
-          </Button>
-        </XStack>
-
         <YStack flex={1} justifyContent="center">
           <YStack gap="$6" alignItems="center">
             <YStack gap="$2" alignItems="center">

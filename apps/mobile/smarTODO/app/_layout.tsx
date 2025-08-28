@@ -11,11 +11,25 @@ import { Button } from "@tamagui/button";
 import { ChevronLeft, Menu, Edit3 } from "@tamagui/lucide-icons";
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 
 import tamaguiConfig from "../tamagui.config";
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
+
+export const headerOptions: NativeStackNavigationOptions = {
+  headerStyle: {
+    backgroundColor: "#E64D13",
+  },
+  headerTintColor: "white",
+  headerTitleStyle: {
+    fontFamily: "VarelaRound",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  headerShadowVisible: true,
+};
 
 /**
  * App root layout that provides theming and loads app fonts before rendering.
@@ -52,20 +66,7 @@ export default function RootLayout() {
     <KeyboardProvider>
       <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
         <AuthProvider>
-          <Stack
-            screenOptions={{
-              headerStyle: {
-                backgroundColor: "#E64D13",
-              },
-              headerTintColor: "white",
-              headerTitleStyle: {
-                fontFamily: "VarelaRound",
-                fontSize: 18,
-                fontWeight: "bold",
-              },
-              headerShadowVisible: true,
-            }}
-          >
+          <Stack screenOptions={headerOptions}>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen

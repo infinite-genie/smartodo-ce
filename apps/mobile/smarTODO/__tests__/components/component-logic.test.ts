@@ -1,4 +1,5 @@
 // Test business logic and helper functions for components
+import { headerOptions } from "../../app/_layout";
 
 describe("Component Logic Tests", () => {
   describe("Layout Header Logic", () => {
@@ -89,18 +90,25 @@ describe("Component Logic Tests", () => {
 
     describe("Header Configuration Validation", () => {
       it("should validate header screen options", () => {
-        const headerStyle = {
-          backgroundColor: "#E64D13",
+        expect(headerOptions.headerStyle).toBeTruthy();
+        expect(headerOptions.headerTitleStyle).toBeTruthy();
+
+        // Type assertion to handle optional properties safely
+        const headerStyle = headerOptions.headerStyle as {
+          backgroundColor: string;
         };
-        const headerTitleStyle = {
-          fontFamily: "VarelaRound",
-          fontSize: 18,
-          fontWeight: "bold",
+        const titleStyle = headerOptions.headerTitleStyle as {
+          fontFamily: string;
+          fontSize: number;
+          fontWeight: string;
         };
 
         expect(headerStyle.backgroundColor).toBe("#E64D13");
-        expect(headerTitleStyle.fontFamily).toBe("VarelaRound");
-        expect(headerTitleStyle.fontSize).toBe(18);
+        expect(headerOptions.headerTintColor).toBe("white");
+        expect(titleStyle.fontFamily).toBe("VarelaRound");
+        expect(titleStyle.fontSize).toBe(18);
+        expect(titleStyle.fontWeight).toBe("bold");
+        expect(headerOptions.headerShadowVisible).toBe(true);
       });
     });
   });
