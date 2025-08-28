@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
@@ -14,9 +14,11 @@ import { Separator } from "@tamagui/separator";
 import { supabase } from "../lib/supabase";
 import { router, usePathname } from "expo-router";
 import { Home, User, X } from "@tamagui/lucide-icons";
+import { useAuth } from "../contexts/AuthContext";
+import { profileService, Profile } from "../lib/services/profile.service";
 
 // Define allowed navigation routes (based on existing app screens)
-type NavigationRoute = "/home";
+type NavigationRoute = "/home" | "/profile";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -35,6 +37,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const translateX = useSharedValue(-280);
   const opacity = useSharedValue(0);
   const pathname = usePathname();
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  const defaultAvatarUrl = "https://avatar.iran.liara.run/public/13";
 
   useEffect(() => {
     if (isOpen) {
@@ -45,6 +51,21 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       opacity.value = withTiming(0, { duration: 300 });
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user && isOpen) {
+        try {
+          const userProfile = await profileService.getProfile(user.id);
+          setProfile(userProfile);
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user, isOpen]);
 
   const sidebarAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -86,7 +107,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       // Use setTimeout to ensure sidebar closing animation starts
       // before navigation to prevent visual conflicts
       setTimeout(() => {
-        router.push(route);
+        router.push(route as any);
       }, 150); // Half of sidebar animation duration
     }
   };
@@ -96,6 +117,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       icon: Home,
       label: "Home",
       route: "/home",
+    },
+    {
+      icon: User,
+      label: "Profile",
+      route: "/profile",
     },
   ];
 
@@ -170,7 +196,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <Avatar circular size="$6">
                       <AvatarImage
                         source={{
-                          uri: "https://avatar.iran.liara.run/public/13",
+                          uri: profile?.avatar_url || defaultAvatarUrl,
                         }}
                       />
                       <AvatarFallback backgroundColor="$primaryDark">

@@ -151,6 +151,19 @@ jest.mock("react-native-safe-area-context", () => {
   };
 });
 
+// Mock react-native-keyboard-controller
+jest.mock("react-native-keyboard-controller", () => {
+  const React = require("react");
+  const { ScrollView } = require("react-native");
+
+  return {
+    KeyboardAwareScrollView: ({ children, ...props }) =>
+      React.createElement(ScrollView, props, children),
+    KeyboardProvider: ({ children }) => children,
+    useKeyboardHandler: jest.fn(),
+  };
+});
+
 // Mock react-native-reanimated
 jest.mock("react-native-reanimated", () => {
   const MockedAnimated = {

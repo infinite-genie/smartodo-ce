@@ -11,12 +11,18 @@ interface AppLayoutProps {
   children: React.ReactNode;
   showHeader?: boolean;
   title?: string;
+  headerRight?: React.ReactNode;
+  headerLeft?: React.ReactNode;
+  hideMenu?: boolean;
 }
 
 export default function AppLayout({
   children,
   showHeader = true,
   title,
+  headerRight,
+  headerLeft,
+  hideMenu = false,
 }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -35,13 +41,13 @@ export default function AppLayout({
         <SafeAreaView edges={["top"]} style={{ backgroundColor: "#E64D13" }}>
           <XStack
             paddingHorizontal="$3"
-            paddingVertical="$4"
+            paddingVertical="$3"
             backgroundColor="$primary"
             borderBottomWidth={1}
             borderBottomColor="$primaryDark"
             alignItems="center"
-            justifyContent="flex-start"
-            minHeight={60}
+            justifyContent="space-between"
+            height={60}
             style={{
               shadowColor: "#000",
               shadowOffset: {
@@ -53,27 +59,37 @@ export default function AppLayout({
               elevation: 2,
             }}
           >
-            <Button
-              unstyled
-              padding="$2"
-              onPress={toggleSidebar}
-              backgroundColor="transparent"
-              hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-              pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-              accessibilityLabel="Open navigation menu"
-            >
-              <Menu size={24} color="white" />
-            </Button>
-            {title && (
-              <H3
-                color="white"
-                fontSize="$5"
-                fontFamily="$heading"
-                fontWeight="bold"
-                marginLeft="$3"
-              >
-                {title}
-              </H3>
+            <XStack alignItems="center" flex={1} height="100%">
+              {headerLeft}
+              {!hideMenu && !headerLeft && (
+                <Button
+                  unstyled
+                  padding="$2"
+                  onPress={toggleSidebar}
+                  backgroundColor="transparent"
+                  hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+                  pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                  accessibilityLabel="Open navigation menu"
+                >
+                  <Menu size={24} color="white" />
+                </Button>
+              )}
+              {title && (
+                <H3
+                  color="white"
+                  fontSize="$5"
+                  fontFamily="$heading"
+                  fontWeight="bold"
+                  marginLeft="$3"
+                >
+                  {title}
+                </H3>
+              )}
+            </XStack>
+            {headerRight && (
+              <XStack alignItems="center" height="100%">
+                {headerRight}
+              </XStack>
             )}
           </XStack>
         </SafeAreaView>
