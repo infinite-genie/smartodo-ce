@@ -81,8 +81,9 @@ export default function ResetPasswordScreen() {
                 textAlign="center"
                 paddingHorizontal="$4"
               >
-                Enter your email address and we&apos;ll send you a link to reset
-                your password
+                {
+                  "Enter your email address and we'll send you a link to reset your password"
+                }
               </Text>
             </YStack>
 

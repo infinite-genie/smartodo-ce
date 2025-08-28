@@ -81,6 +81,8 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                     pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                    accessibilityLabel="Go back"
+                    accessible={true}
                     marginLeft={-8}
                   >
                     <ChevronLeft size={24} color="white" />
@@ -100,6 +102,8 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                     pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                    accessibilityLabel="Go back"
+                    accessible={true}
                     marginLeft={-8}
                   >
                     <ChevronLeft size={24} color="white" />
@@ -119,6 +123,8 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                     pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                    accessibilityLabel="Go back"
+                    accessible={true}
                     marginLeft={-8}
                   >
                     <ChevronLeft size={24} color="white" />
@@ -138,6 +144,8 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                     pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                    accessibilityLabel="Go back"
+                    accessible={true}
                     marginLeft={-8}
                   >
                     <ChevronLeft size={24} color="white" />
@@ -213,6 +221,8 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                     pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+                    accessibilityLabel="Go back"
+                    accessible={true}
                     marginLeft={-8}
                   >
                     <ChevronLeft size={24} color="white" />
