@@ -147,7 +147,7 @@ export default function RootLayout() {
             <Stack.Screen
               name="home"
               options={{
-                title: "smarTODO",
+                title: "Home",
                 headerLeft: () => (
                   <Button
                     unstyled
