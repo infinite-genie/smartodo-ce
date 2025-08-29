@@ -18,6 +18,36 @@ This file serves as the main entry point for AI assistant instructions. For deta
 
 ## 🎯 Important Reminders
 
+### ⚠️ CRITICAL DATABASE SAFETY WARNING
+
+**NEVER EVER run database reset commands under ANY circumstances!**
+
+**FORBIDDEN COMMANDS - DO NOT RUN IN ANY FORM:**
+
+- `supabase db reset`
+- `npx supabase db reset`
+- `npm run supabase db reset`
+- `yarn supabase db reset`
+- `pnpm supabase db reset`
+- Any variation or alias that includes "db reset"
+
+**WHY THIS IS CRITICAL:**
+
+- These commands are EXTREMELY DANGEROUS and will DELETE ALL DATA
+- They completely destroy the entire database including all user data
+- There is NO undo or recovery from this operation
+- Data loss is PERMANENT and IRREVERSIBLE
+
+**SAFE ALTERNATIVES TO USE INSTEAD:**
+
+- `npx supabase migration up` - Apply new migrations safely
+- `npx supabase db push` - Sync schema changes without data loss
+- `npx supabase migration repair` - Fix migration issues
+- `npx supabase migration list` - Check migration status
+- `npx supabase db diff` - Compare schema differences
+
+**IMPORTANT:** If database issues arise, ALWAYS consult with the user before taking ANY action that might affect data. Never attempt to "fix" database problems by resetting.
+
 ### Project Behavior
 
 - Do what has been asked; nothing more, nothing less
