@@ -17,6 +17,7 @@ declare
   current_parent_id uuid;
   visited_ids uuid[] := array[]::uuid[]; -- track visited IDs to detect cycles
   parent_row record;
+  subtree_max_depth integer := 0; -- declare at function level for proper scope
 begin
   -- if this is a root task, no validation needed
   if new.parent_task_id is null then
@@ -66,35 +67,38 @@ begin
     -- add current parent to visited set
     visited_ids := array_append(visited_ids, current_parent_id);
     
-    -- move up to next parent, exit if we hit a non-existent task
+    -- move up to next parent with tenant scoping and row locking
     select parent_task_id into current_parent_id 
       from public.tasks 
-     where id = current_parent_id;
+     where id = current_parent_id
+       and user_id = new.user_id  -- ensure tenant isolation
+       for update;  -- lock the ancestor row to prevent concurrent modifications
     
     -- safety check: prevent infinite loops due to data corruption
     if array_length(visited_ids, 1) > 20 then
       raise exception 'Task hierarchy traversal exceeded safety limit - possible data corruption';
     end if;
   end loop;
+  
   -- compute ancestor depth for NEW
   -- (hierarchy_depth now reflects the number of ancestors)
-  -- compute the maximum relative depth of NEW’s existing subtree
-  declare
-    subtree_max_depth integer := 0;
-  begin
-    with recursive subtree as (
-      select id, 0 as d
-        from public.tasks
-       where parent_task_id = new.id
-      union all
-      select t.id, s.d + 1
-        from public.tasks t
-        join subtree s on t.parent_task_id = s.id
-    )
-    select coalesce(max(d), 0)
-      into subtree_max_depth
-      from subtree;
-  end;
+  -- compute the maximum relative depth of NEW's existing subtree
+  with recursive subtree as (
+    select id, 0 as d
+      from public.tasks
+     where parent_task_id = new.id
+       and user_id = new.user_id  -- ensure tenant isolation
+    union all
+    select t.id, s.d + 1
+      from public.tasks t
+      join subtree s on t.parent_task_id = s.id
+     where t.user_id = new.user_id  -- ensure tenant isolation in recursion
+  )
+  select coalesce(max(d), 0)
+    into subtree_max_depth
+    from subtree;
+  
+  -- check if total depth would exceed limit
   if hierarchy_depth + subtree_max_depth > max_depth then
     raise exception 'Task nesting cannot exceed % levels for subtree', max_depth;
   end if;
