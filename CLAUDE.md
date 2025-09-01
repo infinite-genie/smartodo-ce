@@ -16,6 +16,28 @@ This file serves as the main entry point for AI assistant instructions. For deta
 | **Declarative Schema**  | [`.ai-instructions/06-declarative-schema.md`](.ai-instructions/06-declarative-schema.md)   | Schema management with CLI          |
 | **Edge Functions**      | [`.ai-instructions/07-edge-functions.md`](.ai-instructions/07-edge-functions.md)           | Serverless functions, API endpoints |
 
+## 🚨 CRITICAL SAFETY RULES - NEVER VIOLATE THESE
+
+### Database Safety (ABSOLUTE PROHIBITION)
+
+- **NEVER run `supabase db reset`** - This command DESTROYS ALL DATA and is EXTREMELY DANGEROUS
+- **NEVER run any command that drops or truncates tables** without explicit user approval
+- **NEVER run destructive database operations** in production or development
+- **Alternative safe commands to use instead:**
+  - Use `psql` with transactions to test migrations: `BEGIN; <your SQL>; ROLLBACK;`
+  - Use `supabase migration new` to create migrations
+  - Use `supabase migration up` to apply specific migrations
+  - Test SQL in a sandboxed environment first
+
+### Supabase Project Structure
+
+- **Supabase commands location:** All Supabase CLI commands should be run from `apps/supabase` directory
+- **Migrations location:** Database migrations are stored in `apps/supabase/migrations/`
+- **To create a new migration:**
+  - Navigate to `apps/supabase` directory or use `cd apps/supabase && npx supabase migration new <name>`
+- **To run migrations:** Use `npx supabase migration up` from `apps/supabase` directory
+- **Check package.json:** Always verify available scripts in `apps/supabase/package.json`
+
 ## 🎯 Important Reminders
 
 ### Project Behavior

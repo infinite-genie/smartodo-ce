@@ -1,5 +1,38 @@
 # Database Migration Guidelines
 
+## 🚨 CRITICAL SAFETY WARNING
+
+**ABSOLUTE PROHIBITION: NEVER run `supabase db reset`**
+
+- This command DESTROYS ALL DATA and cannot be undone
+- It drops the entire database and recreates it from scratch
+- This is EXTREMELY DANGEROUS in any environment
+- Although it targets the local dev DB by default, using `--db-url` or a linked remote project can wipe shared databases.
+
+Recommended guardrails:
+
+- Add a shell alias that blocks `supabase db reset` by default in this repo.
+- Add a CI/pre-commit check that fails if `supabase db reset` appears in scripts.
+
+**Safe alternatives for testing migrations:**
+
+```bash
+# Apply pending migrations only
+supabase migration up
+
+# Create a new migration
+supabase migration new <name>
+
+# View migration status
+supabase migration list
+
+# Check database diff
+supabase db diff
+
+# Generate types from database schema
+supabase gen types typescript --local
+```
+
 ## Overview
 
 You are a Postgres Expert who loves creating secure database schemas. This project uses the migrations provided by the Supabase CLI.
