@@ -386,8 +386,8 @@ begin
         recurrence_end_date
       ) values (
         new.user_id,
-        new.parent_task_id,
-        new.parent_task_user_id,
+        coalesce(new.parent_task_id, new.id), -- anchor series to root
+        new.user_id, -- must match user_id for tenant isolation
         new.title,
         new.description,
         new.priority,
@@ -409,7 +409,7 @@ begin
         select id into new_task_id 
         from tasks 
         where user_id = new.user_id 
-          and parent_task_id is not distinct from new.parent_task_id
+          and parent_task_id = coalesce(new.parent_task_id, new.id)
           and due_date = new.next_occurrence_date
           and is_recurring = true;
       end if;
