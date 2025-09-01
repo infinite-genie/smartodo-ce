@@ -27,10 +27,11 @@ create type task_status as enum (
 );
 
 -- Create tasks table
-create table if not exists tasks (
+create table tasks (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references auth.users(id) on delete cascade,
-  parent_task_id uuid references tasks(id) on delete cascade,
+  parent_task_id uuid,
+  parent_task_user_id uuid,
   title text not null,
   description text,
   status task_status default 'pending' not null,
@@ -78,6 +79,16 @@ create table if not exists tasks (
   ),
   constraint no_self_parent check (
     parent_task_id is null or parent_task_id != id
+  ),
+  -- Unique constraint for composite key (id, user_id) to enable same-tenant foreign key
+  constraint tasks_id_user_id_unique unique (id, user_id),
+  -- Composite foreign key to ensure parent task belongs to same user
+  constraint tasks_parent_same_user_fk foreign key (parent_task_id, parent_task_user_id) 
+    references tasks(id, user_id) on delete cascade,
+  -- Ensure parent_task_user_id matches user_id when parent_task_id is set
+  constraint parent_user_id_must_match check (
+    (parent_task_id is null and parent_task_user_id is null) or
+    (parent_task_id is not null and parent_task_user_id = user_id)
   )
 );
 
@@ -89,6 +100,9 @@ create index idx_tasks_due_date on tasks(due_date);
 create index idx_tasks_created_at on tasks(created_at desc);
 create index idx_tasks_next_occurrence_date on tasks(next_occurrence_date) where is_recurring = true;
 create index idx_tasks_user_status on tasks(user_id, status); -- Composite index for common query pattern
+-- Unique index to prevent duplicate recurring task spawns
+create unique index idx_tasks_unique_recurring_spawn on tasks(user_id, parent_task_id, due_date) 
+  where is_recurring = true;
 
 -- Create function to check for cyclic dependencies with depth limit
 create or replace function check_task_cycle()
@@ -125,8 +139,8 @@ begin
     where id = current_parent;
   end loop;
   
-  -- Check if we hit the depth limit
-  if depth_counter >= max_depth then
+  -- Check if we hit the depth limit (only raise if there's actually another parent)
+  if current_parent is not null then
     raise exception 'Task hierarchy too deep: maximum depth of % exceeded', max_depth;
   end if;
   
@@ -201,17 +215,46 @@ begin
     when 'monthly' then
       -- Handle day of month recurrence
       if p_day_of_month is not null then
-        next_date := (date_trunc('month', next_date) + (p_interval || ' months')::interval)::date + (p_day_of_month - 1) * interval '1 day';
-        -- Handle months with fewer days
-        if extract(day from next_date) != p_day_of_month then
-          next_date := date_trunc('month', next_date) + interval '1 month' - interval '1 day';
-        end if;
+        declare
+          candidate_month_start timestamptz;
+        begin
+          -- Calculate the target month without mutating next_date
+          candidate_month_start := date_trunc('month', p_base_date + (p_interval || ' months')::interval);
+          -- Try to set to the desired day
+          next_date := candidate_month_start + (p_day_of_month - 1) * interval '1 day';
+          -- If the day doesn't exist in this month (e.g., Feb 30), clamp to last day
+          if extract(day from next_date) != p_day_of_month then
+            next_date := candidate_month_start + interval '1 month' - interval '1 day';
+          end if;
+        end;
       else
         next_date := next_date + (p_interval || ' months')::interval;
       end if;
       
     when 'yearly' then
-      next_date := next_date + (p_interval || ' years')::interval;
+      -- Handle yearly recurrence with optional month and day
+      if p_month_of_year is not null and p_day_of_month is not null then
+        declare
+          target_year integer;
+          candidate_date timestamptz;
+        begin
+          -- Calculate target year
+          target_year := extract(year from p_base_date)::integer + p_interval;
+          -- Try to construct the date with specified month and day
+          begin
+            candidate_date := make_timestamptz(target_year, p_month_of_year, p_day_of_month, 
+              extract(hour from p_base_date)::integer, 
+              extract(minute from p_base_date)::integer, 
+              extract(second from p_base_date));
+            next_date := candidate_date;
+          exception when datetime_field_overflow then
+            -- If the day doesn't exist (e.g., Feb 30), use last day of that month
+            next_date := make_timestamptz(target_year, p_month_of_year, 1, 0, 0, 0) + interval '1 month' - interval '1 day';
+          end;
+        end;
+      else
+        next_date := next_date + (p_interval || ' years')::interval;
+      end if;
       
     else
       return null;
@@ -325,10 +368,11 @@ begin
       -- Mark current task as no longer recurring to prevent duplicates
       new.is_recurring := false;
       
-      -- Create the new recurring task
+      -- Create the new recurring task (idempotent insert to handle concurrent updates)
       insert into tasks (
         user_id,
         parent_task_id,
+        parent_task_user_id,
         title,
         description,
         priority,
@@ -343,6 +387,7 @@ begin
       ) values (
         new.user_id,
         new.parent_task_id,
+        new.parent_task_user_id,
         new.title,
         new.description,
         new.priority,
@@ -354,7 +399,20 @@ begin
         new.recurrence_day_of_month,
         new.recurrence_month_of_year,
         new.recurrence_end_date
-      ) returning id into new_task_id;
+      ) 
+      on conflict (user_id, parent_task_id, due_date) where is_recurring = true
+      do nothing
+      returning id into new_task_id;
+      
+      -- If insert was skipped due to conflict, get the existing task id
+      if new_task_id is null then
+        select id into new_task_id 
+        from tasks 
+        where user_id = new.user_id 
+          and parent_task_id is not distinct from new.parent_task_id
+          and due_date = new.next_occurrence_date
+          and is_recurring = true;
+      end if;
       
       -- Optionally store reference to the new task (could add a column for this)
       -- new.next_task_id := new_task_id;
@@ -378,8 +436,10 @@ create trigger handle_recurring_tasks
 comment on table tasks is 'Main tasks table with support for subtasks, ownership, and recurring tasks';
 comment on column tasks.user_id is 'Owner of the task, NULL for unowned tasks';
 comment on column tasks.parent_task_id is 'Reference to parent task for subtasks';
+comment on column tasks.parent_task_user_id is 'User ID of parent task, must match current tasks user_id for tenant isolation';
 comment on column tasks.recurrence_days_of_week is 'Array of days (0=Sunday, 6=Saturday) for weekly recurrence';
-comment on column tasks.recurrence_day_of_month is 'Day of month (1-31) for monthly recurrence';
+comment on column tasks.recurrence_day_of_month is 'Day of month (1-31) for monthly and yearly recurrence';
+comment on column tasks.recurrence_month_of_year is 'Month of year (1-12) for yearly recurrence';
 comment on column tasks.next_occurrence_date is 'Next scheduled date for recurring tasks';
 comment on trigger prevent_task_cycles on tasks is 'Prevents circular task dependencies and limits hierarchy depth';
 comment on trigger update_tasks_updated_at on tasks is 'Automatically maintains updated_at timestamp';
