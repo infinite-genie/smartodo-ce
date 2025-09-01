@@ -72,9 +72,9 @@ create table tasks (
   ),
   constraint valid_weekday_values check (
     recurrence_days_of_week is null or 
-    not exists (
-      select 1 from unnest(recurrence_days_of_week) as d 
-      where d is null or d < 0 or d > 6
+    (
+      recurrence_days_of_week <@ array[0,1,2,3,4,5,6] and
+      not (recurrence_days_of_week @> array[null]::integer[])
     )
   ),
   constraint no_self_parent check (
