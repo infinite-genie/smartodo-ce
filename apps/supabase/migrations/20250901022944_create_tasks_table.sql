@@ -372,10 +372,6 @@ begin
     
     -- If there's a next occurrence, create a new task
     if new.next_occurrence_date is not null then
-      -- Mark current task as no longer recurring to prevent duplicates
-      new.is_recurring := false;
-      new.recurrence_pattern := 'none'; -- Reset pattern to satisfy constraint
-      
       -- Create the new recurring task (idempotent insert to handle concurrent updates)
       insert into tasks (
         user_id,
@@ -422,14 +418,31 @@ begin
           and is_recurring = true;
       end if;
       
-      -- Normalize the completed task to fully non-recurring after spawning
-      -- This ensures all recurrence fields are reset to satisfy constraints
+      -- Normalize the completed recurring task after spawning the next occurrence
+      -- Use UPDATE to ensure all constraints are satisfied and changes are persisted
+      update tasks
+      set 
+        is_recurring = false,
+        recurrence_pattern = 'none',
+        recurrence_interval = 1,
+        recurrence_days_of_week = null,
+        recurrence_day_of_month = null,
+        recurrence_month_of_year = null,
+        recurrence_end_date = null,
+        next_occurrence_date = null,
+        completed_at = coalesce(completed_at, now())
+      where id = new.id;
+      
+      -- Update the NEW record to reflect the changes
+      new.is_recurring := false;
+      new.recurrence_pattern := 'none';
       new.recurrence_interval := 1;
       new.recurrence_days_of_week := null;
       new.recurrence_day_of_month := null;
       new.recurrence_month_of_year := null;
       new.recurrence_end_date := null;
       new.next_occurrence_date := null;
+      new.completed_at := coalesce(new.completed_at, now());
     end if;
   end if;
   
