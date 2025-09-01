@@ -285,8 +285,7 @@ create policy "authenticated users can view own tasks"
   for select
   to authenticated
   using (
-    auth.uid() = user_id or 
-    user_id is null
+    auth.uid() = user_id
   );
 
 -- Policy for inserting tasks - authenticated users
@@ -295,8 +294,7 @@ create policy "authenticated users can create own tasks"
   for insert
   to authenticated
   with check (
-    auth.uid() = user_id or 
-    user_id is null
+    auth.uid() = user_id
   );
 
 -- Policy for updating tasks - authenticated users
@@ -304,15 +302,24 @@ create policy "authenticated users can update own tasks"
   on tasks
   for update
   to authenticated
-  using (auth.uid() = user_id or user_id is null)
-  with check (auth.uid() = user_id or user_id is null);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- Policy for deleting tasks - authenticated users
 create policy "authenticated users can delete own tasks"
   on tasks
   for delete
   to authenticated
-  using (auth.uid() = user_id or user_id is null);
+  using (auth.uid() = user_id);
+
+-- RLS Policies for service role - can manage NULL-owned tasks
+-- Policy for service role to manage NULL-owned tasks
+create policy "service role can manage null-owned tasks"
+  on tasks
+  for all
+  to service_role
+  using (user_id is null)
+  with check (user_id is null);
 
 -- RLS Policies for anonymous users (restrictive by default)
 -- Policy for viewing tasks - anonymous users cannot view any tasks
@@ -367,6 +374,7 @@ begin
     if new.next_occurrence_date is not null then
       -- Mark current task as no longer recurring to prevent duplicates
       new.is_recurring := false;
+      new.recurrence_pattern := 'none'; -- Reset pattern to satisfy constraint
       
       -- Create the new recurring task (idempotent insert to handle concurrent updates)
       insert into tasks (
@@ -414,8 +422,14 @@ begin
           and is_recurring = true;
       end if;
       
-      -- Optionally store reference to the new task (could add a column for this)
-      -- new.next_task_id := new_task_id;
+      -- Normalize the completed task to fully non-recurring after spawning
+      -- This ensures all recurrence fields are reset to satisfy constraints
+      new.recurrence_interval := 1;
+      new.recurrence_days_of_week := null;
+      new.recurrence_day_of_month := null;
+      new.recurrence_month_of_year := null;
+      new.recurrence_end_date := null;
+      new.next_occurrence_date := null;
     end if;
   end if;
   
