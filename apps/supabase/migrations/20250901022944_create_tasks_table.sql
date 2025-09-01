@@ -74,7 +74,7 @@ create table tasks (
     recurrence_days_of_week is null or 
     not exists (
       select 1 from unnest(recurrence_days_of_week) as d 
-      where d < 0 or d > 6
+      where d is null or d < 0 or d > 6
     )
   ),
   constraint no_self_parent check (
@@ -419,21 +419,7 @@ begin
       end if;
       
       -- Normalize the completed recurring task after spawning the next occurrence
-      -- Use UPDATE to ensure all constraints are satisfied and changes are persisted
-      update tasks
-      set 
-        is_recurring = false,
-        recurrence_pattern = 'none',
-        recurrence_interval = 1,
-        recurrence_days_of_week = null,
-        recurrence_day_of_month = null,
-        recurrence_month_of_year = null,
-        recurrence_end_date = null,
-        next_occurrence_date = null,
-        completed_at = coalesce(completed_at, now())
-      where id = new.id;
-      
-      -- Update the NEW record to reflect the changes
+      -- Modify NEW record directly (BEFORE trigger will persist these changes)
       new.is_recurring := false;
       new.recurrence_pattern := 'none';
       new.recurrence_interval := 1;
