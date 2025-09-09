@@ -5,10 +5,12 @@ import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { TamaguiProvider } from "@tamagui/core";
+import { PortalProvider } from "@tamagui/portal";
 import { AuthProvider } from "../contexts/AuthContext";
+import { TasksProvider } from "../contexts/TasksContext";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { Button } from "@tamagui/button";
-import { ChevronLeft, Menu, Edit3 } from "@tamagui/lucide-icons";
+import { ChevronLeft, Menu, Edit3, Plus } from "@tamagui/lucide-icons";
+import { HeaderIconButton } from "../components/HeaderIconButton";
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
@@ -55,7 +57,7 @@ export default function RootLayout() {
   }
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen((prev) => !prev);
   };
 
   const closeSidebar = () => {
@@ -65,175 +67,178 @@ export default function RootLayout() {
   return (
     <KeyboardProvider>
       <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
-        <AuthProvider>
-          <Stack screenOptions={headerOptions}>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="login"
-              options={{
-                title: "Welcome Back",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.back()}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Go back"
-                    accessible={true}
-                    marginLeft={-8}
-                  >
-                    <ChevronLeft size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="signup"
-              options={{
-                title: "Create Account",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.back()}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Go back"
-                    accessible={true}
-                    marginLeft={-8}
-                  >
-                    <ChevronLeft size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="reset-password"
-              options={{
-                title: "Reset Password",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.back()}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Go back"
-                    accessible={true}
-                    marginLeft={-8}
-                  >
-                    <ChevronLeft size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="update-password"
-              options={{
-                title: "Update Password",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.back()}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Go back"
-                    accessible={true}
-                    marginLeft={-8}
-                  >
-                    <ChevronLeft size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="home"
-              options={{
-                title: "Home",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={toggleSidebar}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Open navigation menu"
-                    marginLeft={-8}
-                  >
-                    <Menu size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="profile"
-              options={{
-                title: "Profile",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={toggleSidebar}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Open navigation menu"
-                    marginLeft={-8}
-                  >
-                    <Menu size={24} color="white" />
-                  </Button>
-                ),
-                headerRight: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.push("/profileEdit")}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Edit Profile"
-                    marginRight={-8}
-                  >
-                    <Edit3 size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="profileEdit"
-              options={{
-                presentation: "modal",
-                title: "Edit Profile",
-                animation: "slide_from_bottom",
-                headerLeft: () => (
-                  <Button
-                    unstyled
-                    padding="$2"
-                    onPress={() => router.back()}
-                    backgroundColor="transparent"
-                    hoverStyle={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    pressStyle={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-                    accessibilityLabel="Go back"
-                    accessible={true}
-                    marginLeft={-8}
-                  >
-                    <ChevronLeft size={24} color="white" />
-                  </Button>
-                ),
-              }}
-            />
-          </Stack>
-          <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-          <StatusBar style="auto" />
-        </AuthProvider>
+        <PortalProvider shouldAddRootHost>
+          <AuthProvider>
+            <TasksProvider>
+              <Stack screenOptions={headerOptions}>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="onboarding"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="login"
+                  options={{
+                    title: "Welcome Back",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Go back"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="signup"
+                  options={{
+                    title: "Create Account",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Go back"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="reset-password"
+                  options={{
+                    title: "Reset Password",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Go back"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="update-password"
+                  options={{
+                    title: "Update Password",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Go back"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="home"
+                  options={{
+                    title: "Home",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Open navigation menu"
+                        onPress={toggleSidebar}
+                        marginLeft={-8}
+                      >
+                        <Menu size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="profile"
+                  options={{
+                    title: "Profile",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Open navigation menu"
+                        onPress={toggleSidebar}
+                        marginLeft={-8}
+                      >
+                        <Menu size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                    headerRight: () => (
+                      <HeaderIconButton
+                        label="Edit Profile"
+                        onPress={() => router.push("/profileEdit")}
+                        marginRight={-8}
+                      >
+                        <Edit3 size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="profileEdit"
+                  options={{
+                    presentation: "modal",
+                    title: "Edit Profile",
+                    animation: "slide_from_bottom",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Go back"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="tasks"
+                  options={{
+                    title: "Tasks",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Open navigation menu"
+                        onPress={toggleSidebar}
+                        marginLeft={-8}
+                      >
+                        <Menu size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                    headerRight: () => (
+                      <HeaderIconButton
+                        label="Create new task"
+                        onPress={() => router.push("/createTask")}
+                        marginRight={-8}
+                      >
+                        <Plus size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+                <Stack.Screen
+                  name="createTask"
+                  options={{
+                    presentation: "modal",
+                    title: "New Task",
+                    animation: "slide_from_bottom",
+                    headerLeft: () => (
+                      <HeaderIconButton
+                        label="Cancel"
+                        onPress={() => router.back()}
+                        marginLeft={-8}
+                      >
+                        <ChevronLeft size={24} color="white" />
+                      </HeaderIconButton>
+                    ),
+                  }}
+                />
+              </Stack>
+              <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+              <StatusBar style="auto" />
+            </TasksProvider>
+          </AuthProvider>
+        </PortalProvider>
       </TamaguiProvider>
     </KeyboardProvider>
   );

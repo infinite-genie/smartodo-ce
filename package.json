@@ -18,7 +18,8 @@
     "dev:supabase": "lerna run dev --scope=smartodo-supabase",
     "prepare": "husky",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "release": "lerna version --conventional-commits --yes"
+    "release": "lerna version --conventional-commits --yes",
+    "check:tamagui": "bash scripts/check-tamagui-versions.sh"
   },
   "keywords": [
     "monorepo",
@@ -44,6 +45,20 @@
     ],
     "*.{json,md,yml,yaml}": [
       "prettier --write"
+    ],
+    "apps/mobile/smarTODO/package.json": [
+      "bash scripts/check-tamagui-versions.sh"
     ]
+  },
+  "overrides": {
+    "react-test-renderer": "19.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-test-renderer": "19.0.0"
+    }
+  },
+  "resolutions": {
+    "react-test-renderer": "19.0.0"
   }
 }

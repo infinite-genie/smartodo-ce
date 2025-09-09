@@ -6,10 +6,12 @@ module.exports = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(react-native|@react-native|@react-navigation|expo|@expo|expo-modules|@unimodules|@tamagui|@supabase|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage|react-native-url-polyfill|react-native-get-random-values)/)",
+    "node_modules/(?!(react-native|@react-native|@react-navigation|expo|@expo|expo-modules|@unimodules|@tamagui|@supabase|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage|react-native-url-polyfill|react-native-get-random-values|@expo-google-fonts|expo-status-bar|expo-splash-screen)/)",
   ],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
+    "\\.(ttf|otf|eot|woff|woff2)$": "jest-transform-stub",
+    "^../../app/_layout$": "<rootDir>/__mocks__/app/_layout.ts",
   },
   collectCoverage: false,
   collectCoverageFrom: [
@@ -35,4 +37,5 @@ module.exports = {
   ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   verbose: true,
+  forceExit: true,
 };

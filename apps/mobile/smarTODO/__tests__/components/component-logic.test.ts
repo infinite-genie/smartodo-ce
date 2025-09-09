@@ -283,15 +283,19 @@ describe("Component Logic Tests", () => {
         const mockRouterReplace = jest.fn();
 
         const handleLogout = async () => {
+          let timeoutId: NodeJS.Timeout;
           try {
             await Promise.race([
               mockSignOut(),
-              new Promise((_, reject) =>
-                setTimeout(() => reject(timeoutError), 5000),
-              ),
+              new Promise((_, reject) => {
+                timeoutId = setTimeout(() => reject(timeoutError), 10);
+              }),
             ]);
           } catch (error) {
             // Handle timeout gracefully
+            if (timeoutId!) clearTimeout(timeoutId);
+          } finally {
+            if (timeoutId!) clearTimeout(timeoutId);
           }
           mockOnClose();
           mockRouterReplace("/");
