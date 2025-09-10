@@ -7,7 +7,7 @@ export interface Profile {
   user_id: string;
   full_name?: string;
   username?: string;
-  avatar_url?: string;
+  avatar_url?: string | null;
   bio?: string;
   created_at?: string;
   updated_at?: string;
@@ -16,7 +16,7 @@ export interface Profile {
 export interface ProfileUpdateData {
   full_name?: string;
   username?: string;
-  avatar_url?: string;
+  avatar_url?: string | null;
   bio?: string;
 }
 
@@ -72,7 +72,7 @@ class ProfileService {
     return data;
   }
 
-  async updateAvatar(avatarUrl: string): Promise<Profile> {
+  async updateAvatar(avatarUrl: string | null): Promise<Profile> {
     return this.upsertUserProfile({ avatar_url: avatarUrl });
   }
 

@@ -22,7 +22,7 @@ export default function ProfileEditScreen() {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+  const [avatarUrl, setAvatarUrl] = useState<string | null | undefined>(null);
 
   const loadProfile = useCallback(async () => {
     try {

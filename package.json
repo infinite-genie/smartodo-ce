@@ -44,6 +44,17 @@
     ],
     "*.{json,md,yml,yaml}": [
       "prettier --write"
+    ],
+    "apps/mobile/smarTODO/package.json": [
+      "bash scripts/check-tamagui-versions.sh"
     ]
+  },
+  "overrides": {
+    "react-test-renderer": "19.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-test-renderer": "19.0.0"
+    }
   }
 }

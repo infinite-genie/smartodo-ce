@@ -13,12 +13,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@tamagui/avatar";
 import { Separator } from "@tamagui/separator";
 import { supabase } from "../lib/supabase";
 import { router, usePathname } from "expo-router";
-import { Home, User, X } from "@tamagui/lucide-icons";
+import { Home, User, X, CheckSquare } from "@tamagui/lucide-icons";
 import { useAuth } from "../contexts/AuthContext";
 import { profileService, Profile } from "../lib/services/profile.service";
 
 // Define allowed navigation routes (based on existing app screens)
-type NavigationRoute = "/home" | "/profile";
+type NavigationRoute = "/home" | "/profile" | "/tasks";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -117,6 +117,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       icon: Home,
       label: "Home",
       route: "/home",
+    },
+    {
+      icon: CheckSquare,
+      label: "Tasks",
+      route: "/tasks",
     },
     {
       icon: User,

@@ -13,6 +13,7 @@ jest.mock("../../../lib/supabase", () => {
     upsert: jest.fn(),
     insert: jest.fn(),
     delete: jest.fn(),
+    update: jest.fn(),
   };
 
   // Important: Setup chainable returns - each method returns the same object
@@ -21,6 +22,7 @@ jest.mock("../../../lib/supabase", () => {
   mockChainable.upsert.mockImplementation(() => mockChainable);
   mockChainable.insert.mockImplementation(() => mockChainable);
   mockChainable.delete.mockImplementation(() => mockChainable);
+  mockChainable.update.mockImplementation(() => mockChainable);
 
   const mockStorage = {
     upload: jest.fn(),
@@ -74,7 +76,7 @@ describe("ProfileService", () => {
     user_id: "user-123",
     full_name: "John Doe",
     username: "johndoe",
-    avatar_url: "https://example.com/avatar.jpg",
+    avatar_url: "https://example.com/user-123/avatar.jpg",
     bio: "Test bio",
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
@@ -88,6 +90,7 @@ describe("ProfileService", () => {
     __mockChainable.upsert.mockImplementation(() => __mockChainable);
     __mockChainable.insert.mockImplementation(() => __mockChainable);
     __mockChainable.delete.mockImplementation(() => __mockChainable);
+    __mockChainable.update.mockImplementation(() => __mockChainable);
   });
 
   describe("getProfile", () => {
