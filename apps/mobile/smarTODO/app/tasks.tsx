@@ -133,7 +133,7 @@ export default function TasksScreen() {
     });
 
     return groups;
-  }, [tasks, showCompleted]);
+  }, [tasks, showCompleted, new Date().toDateString()]);
 
   const renderTaskSection = useCallback(
     (
@@ -183,7 +183,7 @@ export default function TasksScreen() {
         </YStack>
       );
     },
-    [toggleTaskComplete],
+    [toggleTaskComplete, new Date().toDateString()],
   );
 
   if (loading && tasks.length === 0) {

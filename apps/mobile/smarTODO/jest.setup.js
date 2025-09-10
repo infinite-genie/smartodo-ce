@@ -74,7 +74,11 @@ jest.mock("@supabase/supabase-js", () => ({
       insert: jest.fn(() => Promise.resolve({ data: null, error: null })),
       upsert: jest.fn(() => Promise.resolve({ data: null, error: null })),
       select: jest.fn(() => ({
-        eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+        eq: jest.fn(() => ({
+          order: jest.fn(() => ({
+            order: jest.fn(() => Promise.resolve({ data: [], error: null })),
+          })),
+        })),
       })),
       update: jest.fn(() => ({
         eq: jest.fn(() => Promise.resolve({ data: null, error: null })),
@@ -119,6 +123,111 @@ jest.mock("@tamagui/lucide-icons", () => {
     Plus: MockIcon,
     Menu: MockIcon,
     X: MockIcon,
+    Clock: MockIcon,
+    RotateCw: MockIcon,
+    Check: MockIcon,
+  };
+});
+
+// Mock Tamagui core components
+jest.mock("@tamagui/core", () => {
+  const React = require("react");
+  const { View, Text } = require("react-native");
+  
+  const MockComponent = ({ children, ...props }) => 
+    React.createElement(View, props, children);
+  
+  const MockText = ({ children, ...props }) => 
+    React.createElement(Text, props, children);
+
+  return {
+    TamaguiProvider: ({ children }) => children,
+    useTheme: () => ({
+      gray8: { val: "#6b7280" },
+      gray9: { val: "#4b5563" },
+      yellow9: { val: "#f59e0b" },
+      orange9: { val: "#ea580c" },
+      red9: { val: "#dc2626" },
+      red10: { val: "#b91c1c" },
+    }),
+    Text: MockText,
+  };
+});
+
+// Mock Tamagui stacks
+jest.mock("@tamagui/stacks", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  
+  const MockStack = ({ children, ...props }) => 
+    React.createElement(View, props, children);
+
+  return {
+    XStack: MockStack,
+    YStack: MockStack,
+  };
+});
+
+// Mock Tamagui button
+jest.mock("@tamagui/button", () => {
+  const React = require("react");
+  const { TouchableOpacity } = require("react-native");
+  
+  const MockButton = ({ children, onPress, disabled, ...props }) => 
+    React.createElement(
+      TouchableOpacity, 
+      { onPress: disabled ? undefined : onPress, disabled, ...props },
+      children
+    );
+
+  return {
+    Button: MockButton,
+  };
+});
+
+// Mock Tamagui card
+jest.mock("@tamagui/card", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  
+  const MockCard = ({ children, ...props }) => 
+    React.createElement(View, props, children);
+
+  return {
+    Card: MockCard,
+  };
+});
+
+// Mock Tamagui checkbox
+jest.mock("@tamagui/checkbox", () => {
+  const React = require("react");
+  const { TouchableOpacity } = require("react-native");
+  
+  const MockCheckbox = ({ checked, onCheckedChange, ...props }) => 
+    React.createElement(
+      TouchableOpacity, 
+      { 
+        onPress: () => onCheckedChange && onCheckedChange(!checked),
+        role: 'checkbox',
+        ...props 
+      }
+    );
+
+  return {
+    Checkbox: MockCheckbox,
+  };
+});
+
+// Mock Tamagui text
+jest.mock("@tamagui/text", () => {
+  const React = require("react");
+  const { Text } = require("react-native");
+  
+  const MockText = ({ children, ...props }) => 
+    React.createElement(Text, props, children);
+
+  return {
+    H3: MockText,
   };
 });
 

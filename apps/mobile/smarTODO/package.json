@@ -85,8 +85,5 @@
     "react-test-renderer": "19.0.0",
     "typescript": "~5.8.3"
   },
-  "overrides": {
-    "react-test-renderer": "19.0.0"
-  },
   "private": true
 }

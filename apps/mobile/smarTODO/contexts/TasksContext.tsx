@@ -125,6 +125,13 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!user) return;
 
       try {
+        if (!task.title || !task.title.trim()) {
+          throw new Error("Title is required");
+        }
+        const priority =
+          typeof task.priority === "number"
+            ? Math.max(0, Math.min(task.priority, 5))
+            : 0;
         const { data, error } = await supabase
           .from("tasks")
           .insert({
